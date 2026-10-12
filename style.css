@@ -69,3 +69,12 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .customer-phone-missing{display:inline-block;margin-top:7px;color:var(--muted);font-size:11px}
 .order-open{cursor:pointer}
 .order-open:focus-visible{outline:3px solid var(--gold);outline-offset:-3px;border-radius:17px}
+
+.order-open{position:relative}
+.order-quick-actions{position:absolute;right:17px;top:17px;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.order-header{min-height:27px;padding-right:125px}
+.order-body{padding-right:48px}.order-body>div:last-child{min-width:0}
+.whatsapp-contact{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#1f6040;border:1px solid #55c88488;color:#64ed98;box-shadow:0 3px 9px #0002;text-decoration:none}
+.whatsapp-contact svg{width:24px;height:24px;fill:currentColor;stroke:none}
+.whatsapp-contact:active{background:#287d52}
+@media(max-width:350px){.order-quick-actions{right:13px;top:13px}.order-header{padding-right:110px}.order-body{padding-right:42px}.customer-phone{font-size:11px;padding-inline:7px}}
