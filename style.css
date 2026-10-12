@@ -47,3 +47,14 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .detail-status .step.done{color:#ffe1a0;font-weight:750}
 .detail-status .step.done svg{background:#e4b75d;color:#17291c;border-color:#ffe0a0;stroke-width:2.3}
 .detail-status .step.done:before{background:#e4b75d}
+
+/* Highlight the reached stage, distinct from earlier and future stages. */
+.detail-status .steps{gap:8px;align-items:stretch}
+.detail-status .step{padding:10px 2px 9px;border-radius:12px;background:#17291c;border:1px solid #53674e;color:#a8b7a3;min-height:85px}
+.detail-status .step:before{display:none}
+.detail-status .step svg{background:transparent;border:0;box-shadow:none;color:inherit;margin-bottom:6px}
+.detail-status .step.done{background:#36492e;border-color:#8e8152;color:#dbc388}
+.detail-status .step.done svg{background:transparent;border:0;color:inherit}
+.detail-status .step.done:has(+ .step:not(.done)),.detail-status .step.done:last-child{background:#79efa3;border:2px solid #beffd1;color:#102b1b;box-shadow:0 0 0 3px #79efa322}
+.detail-status .step.done:has(+ .step:not(.done)) svg,.detail-status .step.done:last-child svg{background:#102b1b;color:#79efa3;border:0;box-shadow:none}
+.detail-status .step.done:has(+ .step:not(.done))::after,.detail-status .step.done:last-child::after{content:"ŞU AN";display:block;font-size:8px;font-weight:800;letter-spacing:.6px;margin-top:4px}
