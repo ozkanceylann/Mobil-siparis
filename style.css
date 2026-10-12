@@ -40,9 +40,7 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 @media(max-width:350px){.hero h1{font-size:26px}.order-open{padding:13px}.customer{font-size:14px}.login h1{font-size:32px}.login #login-form{padding:14px}.problem-stat{min-width:100px}}
 
 
-/* Original slim progress bar with visible green completion. */
-.detail-status .step svg{background:#233c2b;color:#a7b9a0}
-.detail-status .step:before{background:#60735a}
-.detail-status .step.done{color:#71e69a}
-.detail-status .step.done svg{background:#71e69a;color:#142219}
-.detail-status .step.done:before{background:#71e69a}
+
+/* Preserve the reference's circular thin progress design; change fill only. */
+.detail-status .step.done svg{background:#55df86;color:#163923}
+.detail-status .step.done:before{background:#55df86}
