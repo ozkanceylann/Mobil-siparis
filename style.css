@@ -41,6 +41,13 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 
 
 
-/* Preserve the reference's circular thin progress design; change fill only. */
+
+/* Circles mark progress stops; the green line ends at the current stop. */
+.detail-status .step svg{background:#233c2b;color:#a7b9a0}
+.detail-status .step:before{background:#60735a}
+.detail-status .step.done{color:#55df86}
 .detail-status .step.done svg{background:#55df86;color:#163923}
-.detail-status .step.done:before{background:#55df86}
+.detail-status .step.past:before{background:#55df86}
+.detail-status .step.current:before{background:#60735a}
+.detail-status .step.current svg{transform:scale(1.4);box-shadow:0 0 0 2px #a1f4bd;z-index:1}
+.detail-status .step:last-child:before{display:none}
