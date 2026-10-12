@@ -51,3 +51,10 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .detail-status .step.current:before{background:#60735a}
 .detail-status .step.current svg{transform:scale(1.4);box-shadow:0 0 0 2px #a1f4bd;z-index:1}
 .detail-status .step:last-child:before{display:none}
+
+/* Separate shipping phase badges and filters. */
+.badge.undelivered,.badge.support{background:#623832;color:#ffc7ba;border-color:#9c635966}
+.badge.returning{background:#5b4328;color:#ffe0aa;border-color:#b78b5066}
+.badge.arrived,.badge.distribution{background:#355341;color:#cde9c9;border-color:#74927066}
+.chip[data-filter="undelivered"],.chip[data-filter="support"]{color:#efaaa1}
+.chip[data-filter="undelivered"].active,.chip[data-filter="support"].active{background:#78423a;border-color:#a66a5e;color:#ffe2dc}
