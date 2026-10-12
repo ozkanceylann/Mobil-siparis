@@ -32,7 +32,7 @@ Deno.serve(async (req:Request) => {
   if(!candidate) return reply(400,{error:'Bu telefonla eşleşen sipariş bulunmuyor.'});
   const alias=phone+'@satici.ozkanceylan.uk';
   if(body.action==='create'||body.action==='reset') {
-   if(typeof body.password!=='string'||body.password.length<12||body.password.length>128) return reply(400,{error:'Şifre 12–128 karakter olmalı.'});
+   if(typeof body.password!=='string'||body.password.length<6||body.password.length>128) return reply(400,{error:'Şifre 6–128 karakter olmalı.'});
   }
   if(body.action==='create') {
    if(candidate.user_id) return reply(409,{error:'Bu satıcının hesabı zaten var.'});
