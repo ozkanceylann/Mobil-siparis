@@ -58,3 +58,7 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .badge.arrived,.badge.distribution{background:#355341;color:#cde9c9;border-color:#74927066}
 .chip[data-filter="undelivered"],.chip[data-filter="support"]{color:#efaaa1}
 .chip[data-filter="undelivered"].active,.chip[data-filter="support"].active{background:#78423a;border-color:#a66a5e;color:#ffe2dc}
+
+.support-reason{display:flex;align-items:flex-start;gap:7px;background:#62383280;color:#ffd3b7;border:1px solid #bb765b60;border-radius:9px;padding:9px 10px;font-size:11px;line-height:1.5;margin:0 0 12px}
+.support-reason svg{width:15px;height:15px;margin-top:1px}
+.detail-status .support-detail-reason{color:#ffd3b7;margin-top:10px;padding:9px 10px;background:#62383280;border:1px solid #bb765b60;border-radius:9px}
