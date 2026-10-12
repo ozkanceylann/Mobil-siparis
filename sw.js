@@ -1,4 +1,4 @@
-const CACHE='siparis-static-__RELEASE__';
+const CACHE='siparis-static-v4-autoupdate';
 const STATIC=['./','index.html','style.css','app.js','updates.js','config.js','manifest.webmanifest','assets/supabase.js','assets/icon.svg','assets/icon-192.png','assets/icon-512.png','assets/icon-maskable.png'];
 const ROOT=new URL('./',self.location.href);
 const PATHS=new Set(STATIC.map(p=>new URL(p,ROOT).pathname));
@@ -8,7 +8,7 @@ self.addEventListener('fetch',event=>{
  const url=new URL(event.request.url);
  if(event.request.method!=='GET'||url.origin!==ROOT.origin||!PATHS.has(url.pathname))return;
  event.respondWith(fetch(event.request,{cache:'no-store'}).then(response=>{
-  if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(c=>c.put(event.request,copy)));}
+  if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(c=>c.put(new Request(new URL(url.pathname,ROOT)),copy)));}
   return response;
  }).catch(()=>caches.open(CACHE).then(c=>c.match(event.request,{ignoreSearch:true}))));
 });
