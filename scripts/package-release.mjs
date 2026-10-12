@@ -1,0 +1,10 @@
+import {readFile,writeFile} from 'node:fs/promises';
+const version=process.env.GITHUB_SHA;
+if(!/^[a-f0-9]{40}$/.test(version||''))throw Error('GITHUB_SHA must identify this release');
+const root=new URL('../public/',import.meta.url);
+let html=await readFile(new URL('index.html',root),'utf8');
+html=html.replaceAll('__RELEASE__',version).replace(/(src|href)="((?:assets\/)?[^"]+\.(?:js|css))"/g,(_,attr,path)=>attr+'="'+path+'?v='+version+'"');
+await writeFile(new URL('index.html',root),html);
+const sw=await readFile(new URL('sw.js',root),'utf8');
+await writeFile(new URL('sw.js',root),sw.replaceAll('__RELEASE__',version));
+await writeFile(new URL('version.json',root),JSON.stringify({version})+'\n');
