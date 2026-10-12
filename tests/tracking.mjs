@@ -34,3 +34,18 @@ assert.match(vm.runInContext('overview()',context),/data-filter="problem"[^]*<st
 vm.runInContext('renderLogin()',context);
 assert.match(app.innerHTML,/-Oz Yazılım-/);
 console.log('PASS: package count, independent tracking disclosure, latest-first history, XSS escaping, returns, problem count and signature.');
+context.order={status:'problem',shipmentStatus:'Teslim_Edilemedi',kargo_takip_kodu:'123',kargo_hareketleri:[
+ {eventStatus:'Gönderi Hazırlandı',eventDateTime2:'2026-10-10 10:00:00',locationAddress:'AKHİSAR Şube',locationPhone:'0236 414 13 50 - 413 91 09'},
+ {eventStatus:'Transfer Aşamasında',eventDateTime2:'2026-10-11 10:00:00',locationAddress:'İZMİR AKTARMA',locationPhone:'0232 486 86 63'},
+ {eventStatus:'Gönderi Varış Birimine Ulaştı',eventDateTime2:'2026-10-12 09:00:00',locationAddress:'NARLIDERE Şube',locationPhone:'0232 239 06 99 - 239 46 99'},
+ {eventStatus:'Teslim Edilemedi',eventDateTime2:'2026-10-12 13:00:00',locationAddress:'NARLIDERE Şube',locationPhone:null}
+]};
+let contactHtml=vm.runInContext('trackingMarkup(order)',context);
+assert.equal((contactHtml.match(/href="tel:/g)||[]).length,1,'Only one branch contact');
+assert.match(contactHtml,/href="tel:\+902322390699"/);
+assert.doesNotMatch(contactHtml,/0236 414|0232 486/);
+assert.ok(contactHtml.indexOf('tel:')<contactHtml.indexOf('Gönderi Varış'),'Phone on latest destination event');
+context.order.kargo_hareketleri=context.order.kargo_hareketleri.slice(0,2);
+assert.doesNotMatch(vm.runInContext('trackingMarkup(order)',context),/href="tel:/,'No source or hub phone before destination arrival');
+assert.equal(vm.runInContext('branchPhone("javascript:alert(1)")',context),null);
+console.log('PASS: destination-only contact, one occurrence, latest branch event, missing-phone fallback, safe Turkish landline dial link.');
