@@ -78,3 +78,13 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .whatsapp-contact svg{width:24px;height:24px;fill:currentColor;stroke:none}
 .whatsapp-contact:active{background:#287d52}
 @media(max-width:350px){.order-quick-actions{right:13px;top:13px}.order-header{padding-right:110px}.order-body{padding-right:42px}.customer-phone{font-size:11px;padding-inline:7px}}
+
+/* Sipariş tarihi ve Gazi ile ortak paket adedi renkleri */
+.order-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0}
+.order-meta .order-id,.order-date{display:inline-flex;align-items:center;min-height:25px;padding:5px 7px;border-radius:7px;background:#d4a8571c;color:#d5b36f;border:1px solid #d4a85738;font-size:10px;font-weight:650;letter-spacing:.2px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.package-count{background:hsl(var(--count-hue) 65% 94%);border-color:hsl(var(--count-hue) 42% 72%);color:hsl(var(--count-hue) 55% 26%);font-weight:700;font-variant-numeric:tabular-nums}
+.package-count--empty{background:#f0f3f1;border-color:#dce3de;color:#718176}
+.order-header{padding-right:0}
+.order-quick-actions{top:37px}
+.order-body{margin-top:38px}
+@media(max-width:350px){.order-header{padding-right:0}.order-quick-actions{top:37px}}
