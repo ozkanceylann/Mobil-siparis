@@ -1,0 +1,25 @@
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const app={innerHTML:''},sheet={innerHTML:''};
+const context=vm.createContext({URL,window:{APP_CONFIG:{},addEventListener(){}},supabase:{createClient:()=>({auth:{onAuthStateChange(){},getSession:async()=>({data:{session:null}})}})},document:{getElementById:id=>id==='app'?app:sheet,addEventListener(){}},navigator:{onLine:true},matchMedia:()=>({matches:false})});
+vm.runInContext(readFileSync(new URL('../app.js',import.meta.url),'utf8'),context);
+context.order={siparis_no:9319,status:'delivered',kargo_durumu:'Tamamlandı',kargo_adet:1,tarih:'2026-10-12',ad_soyad:'Deneme Müşteri',musteri_tel:'05550000000',iade_kodu:'AKH452009319-R1',iade_etiket_url:'https://mn.tc?rtnid=EBJEVXESKEE',iade_tarihi:'2026-10-12T23:31:34Z'};
+let html=vm.runInContext('card(order)',context);
+assert.match(html,/badge return-label-status/);
+assert.match(html,/İade Fişini Aç/);
+assert.match(html,/href="https:\/\/mn.tc\/\?rtnid=EBJEVXESKEE"/);
+vm.runInContext('S.detail=order;renderDetail()',context);
+assert.match(sheet.innerHTML,/steps has-return/);
+assert.match(sheet.innerHTML,/return-step done current/);
+assert.ok(sheet.innerHTML.indexOf('<span>Teslim</span>')<sheet.innerHTML.indexOf('<span>İade Etiketi</span>'));
+assert.match(sheet.innerHTML,/İade Fişini Aç/);
+for(const url of ['javascript:alert(1)','https://mn.tc.evil.test/?rtnid=ABC','https://evil.test/?rtnid=ABC','https://user@mn.tc/?rtnid=ABC','http://mn.tc/?rtnid=ABC']){context.url=url;assert.equal(vm.runInContext('safeReturnLabel(url)',context),null);}
+context.order.iade_etiket_url='javascript:alert(1)';
+assert.doesNotMatch(vm.runInContext('returnLabelMarkup(order)',context),/<a/);
+context.order.iade_kodu=null;
+assert.equal(vm.runInContext('returnLabelMarkup(order)',context),'');
+vm.runInContext('S.detail=order;renderDetail()',context);
+assert.doesNotMatch(sheet.innerHTML,/has-return|İade Fişini Aç/);
+assert.equal(vm.runInContext('canEdit(order)',context),false);
+console.log('PASS: return label on card and after delivery; safe receipt URLs; ordinary delivered orders unchanged.');

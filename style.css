@@ -94,3 +94,18 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .parcel-stack{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;align-self:flex-start}
 .parcel-stack .package-count{display:flex;align-items:center;justify-content:center;width:30px;min-height:25px;padding:4px;border-radius:7px;font-size:12px;line-height:1}
 .package-count--gold{background:#d4af37;border-color:#f1d879;color:#3c2d08}
+
+/* Telefon müşteri adıyla aynı sütunda; bağlantılar açıklamanın üstünde kalır. */
+.order-body{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:start;gap:12px}
+.customer-info{min-width:0;width:100%}
+.customer-contacts{width:100%;justify-content:space-between}
+.return-label{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px;margin:0 0 12px;border:1px solid #d1b5e2;border-radius:10px;background:#f2e6fa;color:#653285}
+.return-label strong{font-size:12px}.return-label p{font-size:11px;margin:4px 0 0;overflow-wrap:anywhere}
+.return-label-open{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:8px 11px;border:1px solid #c59dda;border-radius:8px;background:#e8d4f3;color:#653285;font-size:12px;font-weight:700;text-decoration:none}
+.return-label-open svg{width:15px;height:15px}
+.order-meta .badge.return-label-status{background:#f2e6fa;color:#653285}
+.chip[data-filter="return_label"]{color:#653285}.chip[data-filter="return_label"].active{background:#653285;color:#f2e6fa;border-color:#d1b5e2}
+.steps .return-step.current{color:#e9caff}.steps .return-step.current svg{background:#653285;border-color:#d1b5e2;color:#f2e6fa}
+.sheet-content>.return-label{margin-bottom:14px}
+
+.steps.has-return{grid-template-columns:repeat(5,minmax(0,1fr))}
