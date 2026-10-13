@@ -85,6 +85,9 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .package-count{background:hsl(var(--count-hue) 65% 94%);border-color:hsl(var(--count-hue) 42% 72%);color:hsl(var(--count-hue) 55% 26%);font-weight:700;font-variant-numeric:tabular-nums}
 .package-count--empty{background:#f0f3f1;border-color:#dce3de;color:#718176}
 .order-header{padding-right:0}
-.order-quick-actions{top:37px}
-.order-body{margin-top:38px}
-@media(max-width:350px){.order-header{padding-right:0}.order-quick-actions{top:37px}}
+.order-quick-actions{top:43px}
+.order-body{margin-top:44px}
+@media(max-width:350px){.order-header{padding-right:0}.order-quick-actions{top:43px}}
+
+.order-meta .package-count{min-height:25px;font-size:10px;padding:5px 7px}
+@media(max-width:350px){.order-meta{gap:4px}.order-meta .order-id,.order-meta .order-date,.order-meta .package-count{font-size:9px;padding-inline:5px}.order-meta .package-count svg{width:12px;height:12px}}
