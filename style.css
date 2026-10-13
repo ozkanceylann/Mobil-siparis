@@ -76,8 +76,9 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .whatsapp-contact{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#1f6040;border:1px solid #55c88488;color:#64ed98;box-shadow:0 3px 9px #0002;text-decoration:none;flex-shrink:0}
 .whatsapp-contact svg{width:24px;height:24px;fill:currentColor;stroke:none}
 .whatsapp-contact:active{background:#287d52}
-.order-contacts{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}
-.order-contacts .customer-phone,.order-contacts .customer-phone-missing{margin-top:0}
+.customer-info{flex:1}
+.customer-contacts{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.customer-contacts .customer-phone,.customer-contacts .customer-phone-missing{margin-top:0}
 
 /* Sipariş tarihi ve Gazi ile ortak paket adedi renkleri */
 .order-meta{display:flex;align-items:center;gap:5px;min-width:0;width:100%}
@@ -89,3 +90,7 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 
 .order-meta .badge{margin-left:auto;min-height:25px;display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal;line-height:1.2;min-width:0;overflow-wrap:anywhere}
 @media(max-width:350px){.order-meta .badge{font-size:9px;padding:5px}.order-meta .package-count{gap:3px}.customer-phone{font-size:11px;padding-inline:7px}}
+
+.parcel-stack{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;align-self:flex-start}
+.parcel-stack .package-count{display:flex;align-items:center;justify-content:center;width:30px;min-height:25px;padding:4px;border-radius:7px;font-size:12px;line-height:1}
+.package-count--gold{background:#d4af37;border-color:#f1d879;color:#3c2d08}
