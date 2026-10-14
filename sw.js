@@ -1,5 +1,5 @@
-const CACHE='siparis-static-v5-returns';
-const STATIC=['./','index.html','style.css','app.js','updates.js','config.js','manifest.webmanifest','assets/supabase.js','assets/icon.svg','assets/icon-192.png','assets/icon-512.png','assets/icon-maskable.png'];
+const CACHE='siparis-static-v6-kg-plus';
+const STATIC=['./','index.html','style.css','app.js','updates.js','config.js','cargo-weights.js','manifest.webmanifest','assets/supabase.js','assets/icon.svg','assets/icon-192.png','assets/icon-512.png','assets/icon-maskable.png'];
 const ROOT=new URL('./',self.location.href);
 const PATHS=new Set(STATIC.map(p=>new URL(p,ROOT).pathname));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(STATIC.map(p=>new Request(new URL(p,ROOT),{cache:'no-store'})))).then(()=>self.skipWaiting())));
