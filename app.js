@@ -23,8 +23,45 @@ function signature(){return '<div class="oz-signature"><span></span><b>-Oz Yazı
 function overview(){const c=S.counts;return `<section class="overview"><div class="overview-top"><div><div class="eyebrow">TOPLAM SİPARİŞİN</div><div class="big-num">${c.all??'—'}</div></div><button class="problem-stat" data-filter="problem"><span>DESTEK / TESLİM EDİLEMEDİ</span><strong>${c.undelivered==null?'—':(c.undelivered+(c.support||0))}</strong><small>Siparişleri gör ${icon('chevron')}</small></button></div><div class="overview-grid">${[['pending','Bekleyen'],['inTransit','Kargoda'],['delivered','Teslim edildi']].map(([s,l])=>`<button class="stat" data-filter="${s==='inTransit'?'in_transit':s}"><strong>${s==='inTransit'?(c.shipped==null?'—':c.shipped+(c.arrived||0)+(c.distribution||0)):(c[s]??'—')}</strong><span>${l}</span></button>`).join('')}</div></section>`;}
 const trackingText=v=>String(v||'').replaceAll('_',' ').trim();
 function orderLabel(o){if(hasReturnLabel(o))return 'İade etiketi oluşturuldu';return labels[o.status]||(o.status==='problem'?'Destek Gerekiyor':'Kargoda');}
-function eventTime(e){const v=e.eventDateTime2||e.eventDateTime||'';const m=v.match(/^(\d{2})[.\/-](\d{2})[.\/-](\d{4})(.*)$/);const iso=m?`${m[3]}-${m[2]}-${m[1]}${m[4]}`:v;return Date.parse(iso.replace(' ','T'))||0;}
-function trackingEvents(o){return (Array.isArray(o.kargo_hareketleri)?o.kargo_hareketleri:[]).map((e,i)=>({...e,_i:i})).sort((a,b)=>eventTime(b)-eventTime(a)||Number(b.eventSequence||0)-Number(a.eventSequence||0)||b._i-a._i);}
+function cargoMovementTime(event) {
+  function parse(value) {
+    let text = String(value ?? "").trim();
+    const local = text.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})(.*)$/);
+    if (local) text = local[3] + "-" + local[2].padStart(2, "0") + "-" + local[1].padStart(2, "0") + local[4];
+    const m = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T]+(\d{1,2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?)?(Z|[+-]\d{2}:?\d{2})?$/i);
+    if (!m) return null;
+    const [year, month, day, hour, minute, second] = [m[1], m[2], m[3], m[4] || 0, m[5] || 0, m[6] || 0].map(Number);
+    const ms = Number((m[7] || "").padEnd(3, "0"));
+    const utc = Date.UTC(year, month - 1, day, hour, minute, second, ms);
+    const date = new Date(utc);
+    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day ||
+        date.getUTCHours() !== hour || date.getUTCMinutes() !== minute || date.getUTCSeconds() !== second) return null;
+    // DHL dates without an offset are recorded in Türkiye time.
+    let offset = 180;
+    if (m[8]) {
+      if (m[8].toUpperCase() === "Z") offset = 0;
+      else {
+        const zone = m[8].replace(":", "");
+        const hours = Number(zone.slice(1, 3)), minutes = Number(zone.slice(3, 5));
+        if (hours > 23 || minutes > 59) return null;
+        offset = (hours * 60 + minutes) * (zone[0] === "-" ? -1 : 1);
+      }
+    }
+    return { time: utc - offset * 60000, hasTime: m[4] !== undefined };
+  }
+  const dates = [event?.eventDateTime2, event?.eventDateTime].map(parse).filter(Boolean);
+  return (dates.find(date => date.hasTime) || dates[0])?.time ?? -Infinity;
+}
+
+function sortCargoMovements(movements) {
+  if (!Array.isArray(movements)) return [];
+  return movements.map((event, index) => ({event, index, time: cargoMovementTime(event)}))
+    .sort((a, b) => b.time - a.time || a.index - b.index)
+    .map(item => item.event);
+}
+
+
+function trackingEvents(o){return sortCargoMovements(o.kargo_hareketleri);}
 function branchPhone(value){const first=String(value||'').split(/\s+[-–/]\s+|[,;]/)[0],digits=first.replace(/\D/g,'');const local=/^0[2-5]\d{9}$/.test(digits)?digits:/^[2-5]\d{9}$/.test(digits)?'0'+digits:/^90[2-5]\d{9}$/.test(digits)?'0'+digits.slice(2):/^0090[2-5]\d{9}$/.test(digits)?'0'+digits.slice(4):null;return local?{href:'+90'+local.slice(1),label:`${local.slice(0,4)} ${local.slice(4,7)} ${local.slice(7,9)} ${local.slice(9)}`}:null;}
 function destinationBranch(events){
  const branchKey=e=>String(e.locationAddress||e.location||'').trim().toLocaleLowerCase('tr-TR');
