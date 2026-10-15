@@ -1,1 +1,33 @@
-{"id":"./","name":"Sipariş Takip","short_name":"Sipariş","lang":"tr","start_url":"./","scope":"./","display":"standalone","background_color":"#f5f6f1","theme_color":"#123e33","description":"Siparişlerini ve kargo sürecini cebinden takip et.","icons":[{"src":"assets/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"assets/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"assets/icon-maskable.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]}
+{
+  "id": "./",
+  "name": "Sipariş Takip",
+  "short_name": "Sipariş Takip",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f1",
+  "theme_color": "#123e33",
+  "description": "Siparişlerini ve kargo sürecini cebinden takip et.",
+  "icons": [
+    {
+      "src": "assets/siparis-takip-mobile-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/siparis-takip-mobile-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/siparis-takip-mobile-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "prefer_related_applications": false
+}
