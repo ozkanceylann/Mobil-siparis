@@ -120,7 +120,7 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .install-app-card>button { grid-column:1/-1; width:100%; margin:0; min-height:42px; padding:10px 12px; }
 .mobile-app-mark { overflow:hidden; padding:0; }
 .mobile-app-mark img { display:block; width:100%; height:100%; object-fit:cover; }
-.customer-name-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;width:100%;}.customer-name-row>.customer,.customer-name-row>.order-customer-name{min-width:0;overflow-wrap:anywhere;}
-.customer-note-indicator{position:relative;display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 30px;width:30px!important;min-width:30px!important;height:30px;padding:5px!important;margin:0!important;border:1px solid #d4a85799;border-radius:8px;background:#d4a85726;color:#e8c47b;cursor:pointer;box-sizing:border-box;}
-.customer-note-indicator svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}.customer-note-indicator .note-dot{position:absolute;right:-2px;top:-2px;width:7px;height:7px;border-radius:50%;background:#f3b64e;border:1px solid #6e5425;}.customer-note-indicator:focus-visible{outline:2px solid #e8c47b;outline-offset:2px;}
+
+.customer-note-card{display:block;width:100%;text-align:left;min-width:0;margin:7px 0;padding:8px 10px;border:1px solid #b79a5b;border-left:3px solid #d4a857;border-radius:8px;background:#d4a8571c;color:#ead09b;cursor:pointer;}
+.customer-note-card>span{display:block;font-size:9px;font-weight:700;margin-bottom:3px;}.customer-note-card>strong{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;line-height:1.5;font-weight:500;}
 .customer-note-readonly p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;font-size:14px;}
