@@ -1,4 +1,4 @@
-const CACHE='siparis-static-v10-customer-note-text';
+const CACHE='siparis-static-v11-dhl-handover';
 const STATIC=['./','index.html','style.css','app.js','updates.js','config.js','cargo-weights.js','manifest.webmanifest','assets/supabase.js','assets/siparis-takip-mobile.svg','assets/siparis-takip-mobile-180.png','assets/siparis-takip-mobile-192.png','assets/siparis-takip-mobile-512.png'];
 const ROOT=new URL('./',self.location.href);
 const PATHS=new Set(STATIC.map(p=>new URL(p,ROOT).pathname));

@@ -124,3 +124,10 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .customer-note-card{display:block;width:100%;text-align:left;min-width:0;margin:7px 0;padding:8px 10px;border:1px solid #b79a5b;border-left:3px solid #d4a857;border-radius:8px;background:#d4a8571c;color:#ead09b;cursor:pointer;}
 .customer-note-card>span{display:block;font-size:9px;font-weight:700;margin-bottom:3px;}.customer-note-card>strong{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;line-height:1.5;font-weight:500;}
 .customer-note-readonly p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;font-size:14px;}
+
+/* Four summary counters stay readable on narrow phones. */
+.overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}
+.stat{min-width:0;min-height:52px;border-radius:6px}
+.stat span{line-height:1.5;overflow-wrap:anywhere}
+.stat-handover strong{color:#a9d3f2}
+.stat[aria-pressed="true"],.stat:focus-visible{outline:2px solid #d7b976;outline-offset:5px}
