@@ -133,3 +133,19 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .stat[aria-pressed="true"],.stat:focus-visible{outline:2px solid #d7b976;outline-offset:5px}
 
 .cancel-order-button{display:block;padding:9px 12px;margin:16px 0 8px;border:1px solid #d4a6a0;border-radius:9px;color:#9d352e;background:#fff1ee;font-size:13px}.cancel-order-confirm{background:#a23830}#cancel-order-form .secondary{margin-top:10px}
+
+/* Same zero-total card palette as Gazi's mobile cards. */
+.order.order-zero-total{background:#fff0ed;border-color:#dfb9b1;border-left:3px solid #c68e82}
+.order-zero-total .customer,.order-zero-total .order-footer .price{color:#173e31}
+.order-zero-total .product{color:#465d4b}
+.order-zero-total .sub,.order-zero-total .order-date{color:#657862}
+.order-zero-total .order-id{color:#42624b}
+.order-zero-total .order-action{color:#745b25}
+.order-zero-total .order-footer{border-top-color:#dfb9b1}
+.order-zero-total .customer-phone,.order-zero-total .whatsapp-contact{color:#356344}
+.order-zero-total .parcel,.order-zero-total .package-count{background:#f6eedc;color:#745b25;border-color:#ddcda7}
+.order-zero-total>.tracking{background:#fff0ed;border-top-color:#dfb9b1}
+.order-zero-total .tracking strong{color:#274c31}
+.order-zero-total .tracking time,.order-zero-total .tracking span,.order-zero-total .tracking-time,.order-zero-total .tracking-code,.order-zero-total .tracking-events p{color:#657862}
+.order-zero-total .tracking-label,.order-zero-total .tracking-arrow{color:#927139}
+.order-zero-total .tracking-events li:before{box-shadow:0 0 0 3px #fff0ed}
