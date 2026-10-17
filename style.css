@@ -131,3 +131,5 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .stat span{line-height:1.5;overflow-wrap:anywhere}
 .stat-handover strong{color:#a9d3f2}
 .stat[aria-pressed="true"],.stat:focus-visible{outline:2px solid #d7b976;outline-offset:5px}
+
+.cancel-order-button{display:block;padding:9px 12px;margin:16px 0 8px;border:1px solid #d4a6a0;border-radius:9px;color:#9d352e;background:#fff1ee;font-size:13px}.cancel-order-confirm{background:#a23830}#cancel-order-form .secondary{margin-top:10px}
