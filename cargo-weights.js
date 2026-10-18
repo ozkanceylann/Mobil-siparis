@@ -9,7 +9,7 @@ function parseCargoWeights(value, count, repeatSingle = true) {
   }
   if (!raw) throw new Error("Her paket için KG yazın. Örnek: 5+10+5+6");
   const plus = raw.includes("+");
-  let parts = plus ? raw.split("+") : count === 1 ? [raw] : raw.split(/[,|/;\s]+|(?<=\d)-(?=\d)/);
+  let parts = plus ? raw.split("+") : count === 1 ? [raw] : raw.replace(/(\d)-(?=\d)/g, "$1|").split(/[,|/;\s]+/);
   parts = parts.map(part => part.trim());
   if (parts.some(part => !/^\d+(?:[.,]\d+)?$/.test(part))) throw new Error("KG bilgisi geçersiz. Paketleri + ile ayırın.");
   let weights = parts.map(part => Number(part.replace(",", ".")));
