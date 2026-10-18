@@ -71,6 +71,9 @@ try {
     assert.ok(bounds.y>=0&&bounds.y+bounds.height<=viewport.height,'Edit action must remain inside the app window');
     const cancel=await page.locator('[data-action="cancel-order"]').boundingBox();
     assert.ok(cancel.x+cancel.width<=bounds.x,'Cancel stays to the left of Edit');
+    const close=await page.locator('.sheet-actions [data-action="close-sheet"]').boundingBox();
+    assert.ok(bounds.x+bounds.width<=close.x,'Close stays to the right of Edit');
+    assert.ok(close.y+close.height<=viewport.height,'Close stays inside the app window');
     const dialog=await page.locator('#sheet').boundingBox();
     assert.ok(dialog.y>=0&&dialog.y+dialog.height<=viewport.height+1,'Sheet must fit the app window');
     assert.equal(await page.locator('#sheet').evaluate(el=>el.scrollHeight>el.clientHeight),false);
@@ -101,7 +104,7 @@ try {
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.kargo_kg),'6+11');
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.subeden_teslim),true);
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.teslim_subesi),'KOZYATAĞI');
-  await page.locator('[data-action="close-sheet"]').tap();
+  await page.locator('.sheet-actions [data-action="close-sheet"]').tap();
   await page.locator('#sheet[open]').waitFor({state:'hidden'});
   if(legacy){
    assert.equal(await page.locator('.sheet-backdrop').isVisible(),false);

@@ -214,7 +214,7 @@ function renderDetail(){
  ${o.notlar?'<div class="detail-group detail-note"><div class="detail-title">Sipariş notu</div><div class="note-text">'+esc(o.notlar)+'</div></div>':''}</div>
  ${o.status==='support'&&o.teslimat_aciklama?'<div class="detail-group"><div class="detail-title">Destek gerekiyor</div><p>'+esc(o.teslimat_aciklama)+'</p></div>':''}
  ${returnLabelMarkup(o)}${trackingMarkup(o)}${o.iptal_nedeni?'<div class="detail-group"><div class="detail-title">İptal nedeni</div><p>'+esc(o.iptal_nedeni)+'</p></div>':''}${track?`<a class="secondary" href="${esc(track)}" target="_blank" rel="noopener noreferrer">${icon('truck')} DHL takip sayfası</a>`:''}</div>
- <div class="sheet-actions">${canEdit(o)?'<button type="button" class="cancel-order-button" data-action="cancel-order">İptal et</button><button class="primary" data-action="edit-order">'+icon('edit')+' Düzenle</button>':'<p class="hint">'+icon('lock')+' Bu aşamadaki siparişler yalnızca görüntülenir.</p>'}</div>`;
+ <div class="sheet-actions">${canEdit(o)?'<button type="button" class="cancel-order-button" data-action="cancel-order">Sipariş iptal</button><button class="primary" data-action="edit-order">'+icon('edit')+' Düzenle</button>':'<p class="hint">'+icon('lock')+' Bu aşamadaki siparişler yalnızca görüntülenir.</p>'}<button type="button" class="secondary sheet-close" data-action="close-sheet">Kapat</button></div>`;
 }
 
 const field=(key,label,value,extra='')=>`<div class="field"><label for="${key}">${label}</label><input id="${key}" name="${key}" value="${esc(value)}" ${extra}></div>`;
