@@ -15,7 +15,7 @@ try {
   const context=await browser.newContext({viewport:{width:414,height:736},isMobile:true,hasTouch:true,serviceWorkers:'block'});
   const page=await context.newPage();page.setDefaultTimeout(10000);
   const errors=[];page.on('pageerror',error=>{errors.push(error.message);console.error(error.stack);});
-  await page.setContent('<main id="app"></main><dialog id="sheet" aria-labelledby="sheet-title"></dialog><div id="toast"></div>');
+  await page.setContent('<meta name="viewport" content="width=device-width,initial-scale=1"><main id="app"></main><dialog id="sheet" aria-labelledby="sheet-title"></dialog><div id="toast"></div>');
   await page.addStyleTag({content:legacy?css.replace(/\d+dvh/g,'invalid-unit'):css});
   await page.evaluate(({fixture,legacy})=>{
    if(legacy){
