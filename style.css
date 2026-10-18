@@ -206,3 +206,8 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .sheet-actions [data-action="edit-order"] svg{width:16px;height:16px}
 .sheet-actions .sheet-close{grid-column:3;background:#2a4030;color:#f4f1e5;border-color:#71836b}
 .sheet-actions .hint{grid-column:1/3;margin:0}
+
+/* Compact app header: signature and refresh only. */
+.topbar.topbar--compact{justify-content:space-between;padding:4px 0 8px;border:0;background:none;gap:12px;}
+.topbar--compact .oz-signature{flex:1;min-width:0;margin:0;}
+.topbar--compact .icon-btn{flex-shrink:0;}
