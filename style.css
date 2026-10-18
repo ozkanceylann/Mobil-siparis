@@ -145,3 +145,7 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 #sheet.legacy-sheet[open]{display:block}
 .sheet-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;background:#050e09b5;z-index:100}
 .sheet-backdrop[hidden]{display:none}
+
+/* Destructive order actions use a clear red treatment on the dark theme. */
+.cancel-order-button,.primary.cancel-order-confirm{background:#a23830;color:#fff;border:1px solid #d96b61}
+.cancel-order-button:active,.primary.cancel-order-confirm:active{background:#822b25}

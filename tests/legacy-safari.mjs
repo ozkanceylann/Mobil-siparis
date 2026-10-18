@@ -45,6 +45,7 @@ try {
   await page.locator('#sheet[open]').waitFor();
   assert.equal(await page.locator('#sheet').evaluate(el=>el.classList.contains('legacy-sheet')),legacy);
   assert.ok(await page.locator('#sheet').innerText().then(text=>text.includes('5+10')));
+  assert.equal(await page.locator('[data-action="cancel-order"]').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(162, 56, 48)');
   for(const width of [320,414,430]){
    await page.setViewportSize({width,height:736});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
