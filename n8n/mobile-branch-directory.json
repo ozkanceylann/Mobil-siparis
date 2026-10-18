@@ -1,0 +1,62 @@
+{
+  "workflowId": "9xmX2j7NIEsR0G19",
+  "nodes": [
+    {
+      "name": "Şubeler · Webhook",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gazi_subeler",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://gazi.ozkanceylan.uk,https://siparis.ozkanceylan.uk"
+        }
+      }
+    },
+    {
+      "name": "Şubeler · Yetki",
+      "parameters": {
+        "jsCode": "const r=$input.first().json,m=r.body?.app_metadata||{};\nconst admin=m.firma===\"gazi\"&&m.role!==\"seller\";\nconst seller=m.role===\"seller\"&&/^(?:0?5\\d{9}|905\\d{9})$/.test(String(m.seller_phone||\"\"));\nif(r.statusCode!==200||!r.body?.id||(!admin&&!seller))throw new Error(\"Geçerli Gazi veya satıcı oturumu gerekli.\");\nconst p=$('Şubeler · İstek').first().json;\nreturn [{json:{city_code:p.city_code,district_name:p.district_name}}];"
+      }
+    },
+    {
+      "name": "Şubeler · Yanıt",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "={{ ['https://gazi.ozkanceylan.uk','https://siparis.ozkanceylan.uk'].includes($('Şubeler · Webhook').first().json.headers.origin) ? $('Şubeler · Webhook').first().json.headers.origin : 'https://gazi.ozkanceylan.uk' }}"
+              },
+              {
+                "name": "Cache-Control",
+                "value": "no-store"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Şubeler · Hata Yanıtı",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {success:false,environment:'production',message:'DHL şube listesi alınamadı. İl/ilçeyi ve oturumunuzu kontrol edip yeniden deneyin.'} }}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "={{ ['https://gazi.ozkanceylan.uk','https://siparis.ozkanceylan.uk'].includes($('Şubeler · Webhook').first().json.headers.origin) ? $('Şubeler · Webhook').first().json.headers.origin : 'https://gazi.ozkanceylan.uk' }}"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

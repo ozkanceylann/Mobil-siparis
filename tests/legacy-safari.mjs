@@ -6,9 +6,10 @@ const {chromium}=require('playwright');
 const root=new URL('../',import.meta.url);
 const appSource=await readFile(new URL('app.js',root),'utf8');
 const weights=await readFile(new URL('cargo-weights.js',root),'utf8');
+const branches=await readFile(new URL('branch-selector.js',root),'utf8');
 const css=await readFile(new URL('style.css',root),'utf8');
 assert.ok(!weights.includes('(?<='),'Cargo weights must parse on Safari 15 (no lookbehind)');
-const fixture={siparis_no:1200,ad_soyad:'Deneme Müşteri',musteri_tel:'05550000000',adres:'Deneme Sokak 12',sehir:'İSTANBUL',ilce:'KADIKÖY',sehir_kodu:'34',ilce_kodu:'3401',urun_bilgisi:'Deneme ürün',toplam_tutar:'990',odeme_sekli:'Kapıda ödeme',notlar:'',kargo_adet:'2',kargo_kg:'5-10',tarih:'2026-10-18T12:00:00',kargo_durumu:'Bekliyor',status:'pending',customer_note:'Örnek müşteri notu'};
+const fixture={siparis_no:1200,ad_soyad:'Deneme Müşteri',musteri_tel:'05550000000',adres:'Deneme Sokak 12',sehir:'İSTANBUL',ilce:'KADIKÖY',sehir_kodu:'34',ilce_kodu:'3401',urun_bilgisi:'Deneme ürün',toplam_tutar:'990',odeme_sekli:'Kapıda ödeme',notlar:'',kargo_adet:'2',kargo_kg:'5-10',tarih:'2026-10-18T12:00:00',kargo_durumu:'Bekliyor',status:'pending',customer_note:'Örnek müşteri notu',subeden_teslim:true,teslim_subesi:'KADIKÖY',teslim_sekli_kontrol:false};
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 try {
  for(const legacy of [false,true]) {
@@ -26,21 +27,31 @@ try {
    window.savedChanges=null;
    const user={id:'test-user',app_metadata:{role:'seller',seller_phone:'05000000001'}};
    const client={
-    auth:{getSession:async()=>({data:{session:null}}),onAuthStateChange:()=>{}},
+    auth:{getSession:async()=>({data:{session:window.branchSession?{access_token:'test-session'}:null}}),onAuthStateChange:()=>{}},
     rpc:async(name,args)=>{
      if(name==='seller_order_detail')return {data:fixture};
      if(name==='seller_update_pending'){window.savedChanges=args;return {data:{...fixture,...args.p_changes}};}
-     if(name==='seller_orders')return {data:{orders:[fixture],total:1,counts:{all:1,pending:1}}};
+     if(name==='seller_orders'){window.lastFilter=args.p_filter;return {data:{orders:[fixture],total:1,counts:{all:1,pending:1}}};}
      throw Error('Unexpected RPC: '+name);
     },
     from:table=>({select:()=>({order:async()=>({data:[{id:'34',name:'İSTANBUL'}]}),eq:()=>({order:async()=>({data:[{code:'3401',name:'KADIKÖY'}]})})})})
    };
    window.supabase={createClient:()=>client};window.testUser=user;window.fixture=fixture;
   },{fixture,legacy});
+  await page.route('https://n8n.ozkanceylan.uk/webhook/gazi_subeler',route=>route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({success:true,environment:'production',branches:[{code:'034001',name:'KADIKÖY',address:'Kadıköy şube adresi',phone:''},{code:'034002',name:'KOZYATAĞI',address:'Kozyatağı şube adresi',phone:''}]})}));
   await page.addScriptTag({content:weights});
+  await page.addScriptTag({content:branches});
   await page.addScriptTag({content:appSource});
   await page.locator('#login-form').waitFor();
   await page.evaluate(()=>{S.user=window.testUser;S.orders=[window.fixture];S.counts={all:1,pending:1};S.total=1;renderShell();});
+  await page.locator('[data-tab="orders"]').click();
+  await page.waitForFunction(()=>window.lastFilter==='pending');
+  await page.locator('[data-tab="shipments"]').click();
+  await page.waitForFunction(()=>window.lastFilter==='in_transit');
+  await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
+  await page.locator('[data-tab="home"]').click();
+  await page.waitForFunction(()=>window.lastFilter==='all'&&scrollY===0);
+  assert.equal(await page.locator('.order-meta .branch-delivery').innerText(),'Şubeden teslim');
   await page.locator('[data-order="1200"] .order-id').tap();
   await page.locator('#sheet[open]').waitFor();
   assert.equal(await page.locator('#sheet').evaluate(el=>el.classList.contains('legacy-sheet')),legacy);
@@ -71,8 +82,12 @@ try {
    await page.keyboard.press('Shift+Tab');
    assert.equal(await page.locator('#sheet').evaluate(el=>el.contains(document.activeElement)),true);
   }
+  await page.evaluate(()=>{window.branchSession=true;});
   await page.locator('[data-action="edit-order"]').tap();
   await page.locator('#district option[value="3401"]').waitFor({state:'attached'});
+  await page.locator('#delivery_branch_select option[value="034002"]').waitFor({state:'attached'});
+  await page.locator('#delivery_branch_select').selectOption('034002');
+  assert.equal(await page.locator('#adres').inputValue(),'Kozyatağı şube adresi');
   await page.locator('#ad_soyad').fill('Düzenlenmiş Müşteri');
   await page.locator('#kargo_kg').fill('6+11');
   assert.deepEqual(await page.locator('#edit-form').evaluate(form=>Array.from(form.elements).filter(el=>el.validity&&!el.validity.valid).map(el=>({name:el.name,value:el.value,reason:el.validationMessage}))),[]);
@@ -81,9 +96,11 @@ try {
    console.error(await page.evaluate(()=>({saved:window.savedChanges,toast:document.getElementById('toast').textContent,formError:document.getElementById('edit-error')?.textContent,form:document.getElementById('edit-form')?.outerHTML})));
    throw error;
   });
-  await page.locator('#sheet .detail-block h3').filter({hasText:'Düzenlenmiş Müşteri'}).waitFor();
+  await page.locator('#sheet .detail-overview h3').filter({hasText:'Düzenlenmiş Müşteri'}).waitFor();
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.ad_soyad),'Düzenlenmiş Müşteri');
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.kargo_kg),'6+11');
+  assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.subeden_teslim),true);
+  assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.teslim_subesi),'KOZYATAĞI');
   await page.locator('[data-action="close-sheet"]').tap();
   await page.locator('#sheet[open]').waitFor({state:'hidden'});
   if(legacy){

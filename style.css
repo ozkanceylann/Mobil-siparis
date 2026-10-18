@@ -162,3 +162,40 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .sheet-actions [data-action="edit-order"]{margin-left:auto;width:auto;min-width:140px;min-height:44px;padding:11px 18px}
 .sheet-actions .hint{margin:0 0 8px}
 
+.badge.branch-delivery{background:#193e63;color:#b7ddff;border:1px solid #4687b8;white-space:nowrap}
+#delivery_branch_field[hidden]{display:none}
+
+/* The compact Gazi order detail design, scoped to the detail sheet. */
+#orderDetails{--detail-line:#48604a;--detail-ink:#f4f1e5;--detail-muted:#b1c1aa;--detail-gold:#d4a857;color:var(--detail-ink)}
+#orderDetails .detail-overview{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin:0;border:1px solid #d4a85760;border-radius:12px;background:linear-gradient(115deg,#3b5c45,#253c2c)}
+.detail-overview-main{min-width:0}
+.detail-eyebrow{display:block;color:#d5b36f;font-size:9px;letter-spacing:1px;font-weight:650}
+#orderDetails .detail-overview h3{font-size:20px;line-height:1.25;font-weight:600;letter-spacing:-.6px;color:#f4f1e5;margin:4px 0 7px;overflow-wrap:anywhere}
+.detail-overview-status{display:flex;flex-wrap:wrap;gap:5px}
+.detail-overview-total{flex-shrink:0;text-align:right;display:flex;flex-direction:column;gap:4px;max-width:45%}
+.detail-overview-total>span{font-size:11px;color:#bfceb8;overflow-wrap:anywhere}
+.detail-overview-total>strong{font-size:25px;line-height:1.2;letter-spacing:-.8px;color:#efd39b;font-weight:650;overflow-wrap:anywhere}
+.detail-compact-meta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 14px;margin:8px 1px 10px;color:#a5b7a6;font-size:10px;line-height:1.5}
+.detail-taker{margin-left:auto;display:inline-flex;align-items:center;gap:5px}
+#orderDetails .detail-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;align-items:start}
+#orderDetails .detail-group{padding:11px 12px;margin:0;border:1px solid var(--detail-line);border-radius:11px;background:linear-gradient(125deg,#2a4331,#223728);box-shadow:none;min-width:0;color:var(--detail-ink)}
+#orderDetails>.detail-group{margin-top:9px}
+#orderDetails .detail-title{display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:0 0 6px;border-bottom:1px solid #58714d66;color:#e0bd74;font-size:10px;line-height:1.5;letter-spacing:.4px;font-weight:650}
+#orderDetails .detail-title:before{content:"";height:5px;width:5px;flex-shrink:0;border-radius:50%;background:#d4a857}
+#orderDetails .detail-block p{margin:4px 0;font-size:12px;line-height:1.5}
+#orderDetails .detail-delivery-type{font-size:10px;color:#d5bd88}
+.detail-city-line{margin-top:6px;font-size:11px;overflow-wrap:anywhere}
+.detail-address-tools{margin-top:4px;font-size:9px;color:#91a68b}
+.detail-product-lines{white-space:pre-line;font-size:13px;line-height:1.55;color:#f0eedc;font-weight:550;overflow-wrap:anywhere}
+.detail-parcel-line{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:9px;color:#a9bda3;font-size:10px}
+.detail-parcel-line strong{font-size:11px;font-weight:550;margin-left:8px;color:#dcc698}
+#orderDetails .detail-note{grid-column:1/-1;display:flex;align-items:baseline;gap:12px}
+#orderDetails .detail-note .detail-title{flex-shrink:0;border:0;padding:0;margin:0}
+.note-text{font-size:12px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+#orderDetails>.tracking,#orderDetails>.return-label{margin-top:9px}
+@media(min-width:600px){#sheet{max-width:660px;bottom:12px;max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);border-radius:18px}}
+@media(max-width:600px){#orderDetails .detail-layout{grid-template-columns:minmax(0,1fr);gap:7px}#orderDetails .detail-overview{padding:10px 11px}#orderDetails .detail-overview h3{font-size:18px}.detail-overview-total>strong{font-size:22px}.detail-taker{margin-left:0}}
+@media(max-width:360px){#orderDetails .detail-overview{align-items:flex-start;flex-direction:column}.detail-overview-total{max-width:100%;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:6px 10px;text-align:left}}
+.order-meta{flex-wrap:wrap}
+.order-delivery-badges{flex:0 0 100%;display:flex;justify-content:flex-start}
+.order-meta .branch-delivery{flex:0 0 auto;margin:0;white-space:nowrap;min-height:24px}
