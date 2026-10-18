@@ -14,7 +14,7 @@ try {
  for(const legacy of [false,true]) {
   const context=await browser.newContext({viewport:{width:414,height:736},isMobile:true,hasTouch:true,serviceWorkers:'block'});
   const page=await context.newPage();page.setDefaultTimeout(10000);
-  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  const errors=[];page.on('pageerror',error=>{errors.push(error.message);console.error(error.stack);});
   await page.setContent('<main id="app"></main><dialog id="sheet" aria-labelledby="sheet-title"></dialog><div id="toast"></div>');
   await page.addStyleTag({content:legacy?css.replace(/\d+dvh/g,'invalid-unit'):css});
   await page.evaluate(({fixture,legacy})=>{
@@ -61,6 +61,7 @@ try {
   await page.locator('#district option[value="3401"]').waitFor({state:'attached'});
   await page.locator('#ad_soyad').fill('Düzenlenmiş Müşteri');
   await page.locator('#kargo_kg').fill('6+11');
+  assert.deepEqual(await page.locator('#edit-form').evaluate(form=>Array.from(form.elements).filter(el=>el.validity&&!el.validity.valid).map(el=>({name:el.name,value:el.value,reason:el.validationMessage}))),[]);
   await page.locator('#edit-form [type="submit"]').tap();
   await page.getByText('Sipariş bilgileri kaydedildi.').waitFor();
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.ad_soyad),'Düzenlenmiş Müşteri');
