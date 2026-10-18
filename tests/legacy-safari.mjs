@@ -51,6 +51,20 @@ try {
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
    assert.ok(await page.locator('#sheet').evaluate(el=>el.getBoundingClientRect().height<=innerHeight));
   }
+  for(const viewport of [{width:1366,height:600},{width:1024,height:480},{width:520,height:400},{width:390,height:736}]) {
+   await page.setViewportSize(viewport);
+   await page.evaluate(()=>{const block=document.querySelector('#sheet .detail-block p');block.textContent=('Uzun sipariş adresi ve açıklaması\n').repeat(60);});
+   for(const end of [false,true]) {
+    await page.locator('#sheet>.sheet-content').evaluate((el,end)=>{el.scrollTop=end?el.scrollHeight:0;},end);
+    const bounds=await page.locator('[data-action="edit-order"]').boundingBox();
+    assert.ok(bounds.y>=0&&bounds.y+bounds.height<=viewport.height,'Edit action must remain inside the app window');
+    const cancel=await page.locator('[data-action="cancel-order"]').boundingBox();
+    assert.ok(cancel.x+cancel.width<=bounds.x,'Cancel stays to the left of Edit');
+    const dialog=await page.locator('#sheet').boundingBox();
+    assert.ok(dialog.y>=0&&dialog.y+dialog.height<=viewport.height+1,'Sheet must fit the app window');
+    assert.equal(await page.locator('#sheet').evaluate(el=>el.scrollHeight>el.clientHeight),false);
+   }
+  }
   if(legacy){
    assert.equal(await page.locator('.sheet-backdrop').isVisible(),true);
    assert.equal(await page.locator('#app').getAttribute('aria-hidden'),'true');

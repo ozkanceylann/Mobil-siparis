@@ -149,3 +149,16 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 /* Destructive order actions use a clear red treatment on the dark theme. */
 .cancel-order-button,.primary.cancel-order-confirm{background:#a23830;color:#fff;border:1px solid #d96b61}
 .cancel-order-button:active,.primary.cancel-order-confirm:active{background:#822b25}
+
+/* Keep the whole sheet inside desktop app windows; scroll its body only. */
+#sheet{position:fixed;top:auto;bottom:0;max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow:hidden}
+#sheet[open],#sheet.legacy-sheet[open]{display:flex;flex-direction:column}
+#sheet.legacy-sheet{max-height:calc(100vh - 24px)}
+#sheet>.sheet-head,#sheet>.sheet-actions{flex:0 0 auto}
+#sheet>.sheet-content{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sheet-actions{padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:#1a2a1f;border-top:1px solid #d4a85738}
+.sheet-actions{display:flex;align-items:center;gap:12px}
+.sheet-actions .cancel-order-button{margin:0;flex:0 0 auto;min-height:40px;padding:9px 12px}
+.sheet-actions [data-action="edit-order"]{margin-left:auto;width:auto;min-width:140px;min-height:44px;padding:11px 18px}
+.sheet-actions .hint{margin:0 0 8px}
+
