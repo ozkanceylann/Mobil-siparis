@@ -63,7 +63,11 @@ try {
   await page.locator('#kargo_kg').fill('6+11');
   assert.deepEqual(await page.locator('#edit-form').evaluate(form=>Array.from(form.elements).filter(el=>el.validity&&!el.validity.valid).map(el=>({name:el.name,value:el.value,reason:el.validationMessage}))),[]);
   await page.locator('#edit-form [type="submit"]').tap();
-  await page.getByText('Sipariş bilgileri kaydedildi.').waitFor();
+  await page.waitForFunction(()=>window.savedChanges!==null).catch(async error=>{
+   console.error(await page.evaluate(()=>({saved:window.savedChanges,toast:document.getElementById('toast').textContent,formError:document.getElementById('edit-error')?.textContent,form:document.getElementById('edit-form')?.outerHTML})));
+   throw error;
+  });
+  await page.locator('#sheet .detail-block h3').filter({hasText:'Düzenlenmiş Müşteri'}).waitFor();
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.ad_soyad),'Düzenlenmiş Müşteri');
   assert.equal(await page.evaluate(()=>window.savedChanges.p_changes.kargo_kg),'6+11');
   await page.locator('[data-action="close-sheet"]').tap();
