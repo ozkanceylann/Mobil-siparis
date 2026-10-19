@@ -7,6 +7,7 @@ const root=new URL('../',import.meta.url);
 const appSource=await readFile(new URL('app.js',root),'utf8');
 const weights=await readFile(new URL('cargo-weights.js',root),'utf8');
 const branches=await readFile(new URL('branch-selector.js',root),'utf8');
+const historySource=await readFile(new URL('customer-order-history.js',root),'utf8');
 const css=await readFile(new URL('style.css',root),'utf8');
 assert.ok(!weights.includes('(?<='),'Cargo weights must parse on Safari 15 (no lookbehind)');
 const fixture={siparis_no:1200,ad_soyad:'Deneme Müşteri',musteri_tel:'05550000000',adres:'Deneme Sokak 12',sehir:'İSTANBUL',ilce:'KADIKÖY',sehir_kodu:'34',ilce_kodu:'3401',urun_bilgisi:'Deneme ürün',toplam_tutar:'990',odeme_sekli:'Kapıda ödeme',notlar:'',kargo_adet:'2',kargo_kg:'5-10',tarih:'2026-10-18T12:00:00',kargo_durumu:'Bekliyor',status:'pending',customer_note:'Örnek müşteri notu',subeden_teslim:true,teslim_subesi:'KADIKÖY',teslim_sekli_kontrol:false};
@@ -29,7 +30,8 @@ try {
    const client={
     auth:{getSession:async()=>({data:{session:window.branchSession?{access_token:'test-session'}:null}}),onAuthStateChange:()=>{}},
     rpc:async(name,args)=>{
-     if(name==='seller_order_detail')return {data:fixture};
+     if(name==='seller_order_detail'){window.openedOrderId=args.p_id;return {data:{...fixture,siparis_no:args.p_id}};}
+     if(name==='gazi_customer_order_history')return {data:{1200:{ordinal:2,total:2,orders:[{siparis_no:1200,tarih:fixture.tarih},{siparis_no:1100,tarih:'2026-09-01T12:00:00'}]}}};
      if(name==='seller_update_pending'){window.savedChanges=args;return {data:{...fixture,...args.p_changes}};}
      if(name==='seller_orders'){window.lastFilter=args.p_filter;return {data:{orders:[fixture],total:1,counts:{all:1,pending:1}}};}
      throw Error('Unexpected RPC: '+name);
@@ -41,6 +43,7 @@ try {
   await page.route('https://n8n.ozkanceylan.uk/webhook/gazi_subeler',route=>route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({success:true,environment:'production',branches:[{code:'034001',name:'KADIKÖY',address:'Kadıköy şube adresi',phone:''},{code:'034002',name:'KOZYATAĞI',address:'Kozyatağı şube adresi',phone:''}]})}));
   await page.addScriptTag({content:weights});
   await page.addScriptTag({content:branches});
+  await page.addScriptTag({content:historySource});
   await page.addScriptTag({content:appSource});
   await page.locator('#login-form').waitFor();
   await page.evaluate(()=>{S.user=window.testUser;S.orders=[window.fixture];S.counts={all:1,pending:1};S.total=1;renderShell();});
@@ -52,6 +55,14 @@ try {
   await page.locator('[data-tab="home"]').click();
   await page.waitForFunction(()=>window.lastFilter==='all'&&scrollY===0);
   assert.equal(await page.locator('.order-meta .branch-delivery').innerText(),'Şubeden teslim');
+  assert.match(await page.locator('.customer-order-history summary').innerText(),/2\. siparişi/);
+  await page.locator('.customer-order-history summary').tap();
+  assert.equal(await page.locator('#sheet[open]').count(),0,'Expanding history must not open the card');
+  assert.match(await page.locator('.customer-history-list').innerText(),/01\.09\.2026/);
+  await page.locator('[data-customer-order="1100"]').tap();
+  await page.locator('#sheet[open]').waitFor();
+  assert.equal(await page.evaluate(()=>window.openedOrderId),1100);
+  await page.locator('.sheet-actions [data-action="close-sheet"]').tap();
   await page.locator('[data-order="1200"] .order-id').tap();
   await page.locator('#sheet[open]').waitFor();
   assert.equal(await page.locator('#sheet').evaluate(el=>el.classList.contains('legacy-sheet')),legacy);

@@ -30,7 +30,7 @@ jobs:
       - name: Package public files
         run: |
           mkdir public
-          cp index.html style.css app.js branch-selector.js updates.js config.js sw.js cargo-weights.js manifest.webmanifest public/
+          cp index.html style.css app.js customer-order-history.js branch-selector.js updates.js config.js sw.js cargo-weights.js manifest.webmanifest public/
           cp -R assets public/
           touch public/.nojekyll
       - uses: actions/configure-pages@v5
