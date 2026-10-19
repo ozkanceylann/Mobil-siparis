@@ -32,6 +32,7 @@ try {
     rpc:async(name,args)=>{
      if(name==='seller_order_detail'){window.openedOrderId=args.p_id;return {data:{...fixture,siparis_no:args.p_id}};}
      if(name==='gazi_customer_order_history')return {data:{1200:{ordinal:2,total:2,orders:[{siparis_no:1200,tarih:fixture.tarih},{siparis_no:1100,tarih:'2026-09-01T12:00:00'}]}}};
+     if(name==='seller_original_order_message'){window.originalMessageReads=(window.originalMessageReads||0)+1;return {data:{message:'Müşterinin mesajı\n5 kg ürün <özel not>'}};}
      if(name==='seller_update_pending'){window.savedChanges=args;return {data:{...fixture,...args.p_changes}};}
      if(name==='seller_orders'){window.lastFilter=args.p_filter;return {data:{orders:[fixture],total:1,counts:{all:1,pending:1}}};}
      throw Error('Unexpected RPC: '+name);
@@ -55,6 +56,14 @@ try {
   await page.locator('[data-tab="home"]').click();
   await page.waitForFunction(()=>window.lastFilter==='all'&&scrollY===0);
   assert.equal(await page.locator('.order-meta .branch-delivery').innerText(),'Şubeden teslim');
+  assert.equal(await page.evaluate(()=>window.originalMessageReads||0),0,'Original messages load only when expanded');
+  await page.locator('.card-original-message summary').tap();
+  await page.waitForFunction(()=>document.querySelector('.original-message-text').textContent.includes('<özel not>'));
+  assert.equal(await page.locator('#sheet[open]').count(),0,'Opening the original message must not open the order');
+  assert.equal(await page.locator('.original-message-text').innerText(),'Müşterinin mesajı\n5 kg ürün <özel not>');
+  await page.locator('.card-original-message summary').tap();
+  await page.locator('.card-original-message summary').tap();
+  assert.equal(await page.evaluate(()=>window.originalMessageReads),1,'Already loaded messages are reused');
   assert.match(await page.locator('.customer-order-history summary').innerText(),/2\. siparişi/);
   await page.locator('.customer-order-history summary').tap();
   assert.equal(await page.locator('#sheet[open]').count(),0,'Expanding history must not open the card');

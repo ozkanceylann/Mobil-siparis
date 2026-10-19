@@ -230,6 +230,14 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .customer-order-history summary:focus-visible,.customer-history-list button:focus-visible{outline:2px solid #d4ba81;outline-offset:2px}
 .customer-history-unavailable{display:block;font-size:10px;color:#aab7a4;margin-top:7px}
 
+.card-original-message{margin-top:8px;border:1px solid #78936b55;border-radius:10px;background:#15291d66;color:#e1e8d8;min-width:0;max-width:100%}
+.card-original-message summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;min-height:42px;padding:9px 11px;font-size:12px;font-weight:650;color:#e6cf9a}
+.card-original-message summary::-webkit-details-marker{display:none}
+.original-message-arrow{width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:0 3px 4px 0;flex-shrink:0}
+.card-original-message[open] .original-message-arrow{transform:rotate(225deg);margin-bottom:0}
+.original-message-text{padding:10px 11px;border-top:1px solid #78936b44;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;max-height:300px;overflow:auto;overscroll-behavior:contain;user-select:text}
+.card-original-message summary:focus-visible{outline:2px solid #d4ba81;outline-offset:2px}
+
 /* Keep all navigation items on one row for both seller and admin accounts. */
 .bottom-nav{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px}
 .bottom-nav .nav-item{min-width:0;padding:4px 0;font-size:10px;white-space:nowrap}
