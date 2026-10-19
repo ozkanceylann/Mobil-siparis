@@ -1,4 +1,4 @@
-const CACHE='siparis-static-v23-detail-disclosures';
+const CACHE='siparis-static-v24-search-scopes';
 const STATIC=['./','index.html','style.css','app.js','customer-order-history.js','branch-selector.js','updates.js','config.js','cargo-weights.js','manifest.webmanifest','assets/supabase.js','assets/siparis-takip-mobile.svg','assets/siparis-takip-mobile-180.png','assets/siparis-takip-mobile-192.png','assets/siparis-takip-mobile-512.png'];
 const ROOT=new URL('./',self.location.href);
 const PATHS=new Set(STATIC.map(p=>new URL(p,ROOT).pathname));

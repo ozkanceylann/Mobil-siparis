@@ -241,3 +241,9 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 /* Keep all navigation items on one row for both seller and admin accounts. */
 .bottom-nav{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px}
 .bottom-nav .nav-item{min-width:0;padding:4px 0;font-size:10px;white-space:nowrap}
+
+/* Keep both search scopes available side by side on mobile. */
+.search-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.search-field{min-width:0}.search-field>span{display:block;font-size:12px;font-weight:650;margin-bottom:7px}
+.search-fields .search{padding:0 10px;gap:6px;margin-bottom:0}.search-fields svg{width:18px;height:18px}
+.search-fields input{font-size:16px}.search-scope{font-size:11px;color:var(--muted);margin:8px 0 12px}
