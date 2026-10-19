@@ -24,7 +24,7 @@ const OrderReceipts=(()=>{
  async function mount(db,o,root,onChange=()=>{}){
  const panel=root.querySelector(`[data-receipt-panel="${Number(o.siparis_no)}"]`);if(!panel)return;
  const message=panel.querySelector('[data-receipt-message]');
- const {data:auth}=await db.auth.getUser();const isAdmin=OPERATIONS&&auth?.user?.app_metadata?.firma==='gazi'&&auth.user.app_metadata?.role!=='seller';
+ let isAdmin=false;if(OPERATIONS){const {data:auth}=await db.auth.getUser();isAdmin=auth?.user?.app_metadata?.firma==='gazi'&&auth.user.app_metadata?.role!=='seller';}
  async function refresh(){
  const {data,error}=await db.from('order_receipts').select('*').eq('order_id',Number(o.siparis_no)).order('created_at',{ascending:false});
  if(!panel.isConnected)return;
