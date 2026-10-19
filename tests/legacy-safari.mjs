@@ -7,6 +7,7 @@ const root=new URL('../',import.meta.url);
 const appSource=await readFile(new URL('app.js',root),'utf8');
 const weights=await readFile(new URL('cargo-weights.js',root),'utf8');
 const branches=await readFile(new URL('branch-selector.js',root),'utf8');
+const receiptSource=await readFile(new URL('order-receipts.js',root),'utf8');
 const historySource=await readFile(new URL('customer-order-history.js',root),'utf8');
 const css=await readFile(new URL('style.css',root),'utf8');
 assert.ok(!weights.includes('(?<='),'Cargo weights must parse on Safari 15 (no lookbehind)');
@@ -28,7 +29,7 @@ try {
    window.savedChanges=null;
    const user={id:'test-user',app_metadata:{role:'seller',seller_phone:'05000000001'}};
    const client={
-    auth:{getSession:async()=>({data:{session:window.branchSession?{access_token:'test-session'}:null}}),onAuthStateChange:()=>{}},
+    auth:{getUser:async()=>({data:{user}}),getSession:async()=>({data:{session:window.branchSession?{access_token:'test-session'}:null}}),onAuthStateChange:()=>{}},
     rpc:async(name,args)=>{
      if(name==='seller_order_detail'){window.openedOrderId=args.p_id;return {data:{...fixture,siparis_no:args.p_id}};}
      if(name==='gazi_customer_order_history')return {data:{1200:{ordinal:2,total:2,orders:[{siparis_no:1200,tarih:fixture.tarih},{siparis_no:1100,tarih:'2026-09-01T12:00:00'}]}}};
@@ -37,7 +38,7 @@ try {
      if(name==='seller_orders'){window.lastFilter=args.p_filter;return {data:{orders:[fixture],total:1,counts:{all:1,pending:1}}};}
      throw Error('Unexpected RPC: '+name);
     },
-    from:table=>({select:()=>({order:async()=>({data:[{id:'34',name:'İSTANBUL'}]}),eq:()=>({order:async()=>({data:[{code:'3401',name:'KADIKÖY'}]})})})})
+    from:table=>table==='order_receipts'?{select(){return this},in:async()=>({data:[]}),eq(){return this},order:async()=>({data:[]})}:({select:()=>({order:async()=>({data:[{id:'34',name:'İSTANBUL'}]}),eq:()=>({order:async()=>({data:[{code:'3401',name:'KADIKÖY'}]})})})})
    };
    window.supabase={createClient:()=>client};window.testUser=user;window.fixture=fixture;
   },{fixture,legacy});
@@ -45,6 +46,7 @@ try {
   await page.addScriptTag({content:weights});
   await page.addScriptTag({content:branches});
   await page.addScriptTag({content:historySource});
+  await page.addScriptTag({content:receiptSource});
   await page.addScriptTag({content:appSource});
   await page.locator('#login-form').waitFor();
   await page.evaluate(()=>{S.user=window.testUser;S.orders=[window.fixture];S.counts={all:1,pending:1};S.total=1;renderShell();});
