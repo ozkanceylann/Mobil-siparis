@@ -170,7 +170,7 @@ function hasZeroOrderTotal(value) {
 }
 function deliveryBadge(o){return o.subeden_teslim===true?'<span class="badge branch-delivery">Şubeden teslim</span>':'';}
 function originalMessageCard(o){return `<details class="card-original-message" data-original-message="${Number(o.siparis_no)}"><summary>Orjinal mesaj <span class="original-message-arrow" aria-hidden="true"></span></summary><div class="original-message-text" role="status">Mesajı görmek için açın.</div></details>`;}
-function orderWriteSnapshot(o){const original={...o};delete original.customer_order_history;return original;}
+function orderWriteSnapshot(o){const original={...o};for(const key of ['customer_order_history','receipts','receiptError'])delete original[key];return original;}
 document.addEventListener('toggle',async event=>{
  const panel=event.target;
  if(!panel.matches||!panel.matches('details[data-original-message]')||!panel.open||panel.dataset.loaded||panel.dataset.loading)return;
