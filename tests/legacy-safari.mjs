@@ -75,6 +75,14 @@ try {
   await page.locator('[data-order="1200"] .order-id').tap();
   await page.locator('#sheet[open]').waitFor();
   assert.equal(await page.locator('#sheet').evaluate(el=>el.classList.contains('legacy-sheet')),legacy);
+  assert.deepEqual(await page.locator('#sheet .detail-disclosures>details').evaluateAll(els=>els.map(el=>el.className)),['customer-order-history','card-original-message','tracking']);
+  assert.equal(await page.locator('#sheet .detail-disclosures>details[open]').count(),0);
+  await page.locator('#sheet .card-original-message summary').tap();
+  await page.waitForFunction(()=>document.querySelector('#sheet .original-message-text').textContent.includes('<özel not>'));
+  await page.locator('#sheet .card-original-message summary').tap();
+  await page.locator('#sheet .tracking summary').tap();
+  assert.match(await page.locator('#sheet .tracking .tracking-body').innerText(),/henüz sisteme gelmedi/);
+  await page.locator('#sheet .tracking summary').tap();
   assert.ok(await page.locator('#sheet').innerText().then(text=>text.includes('5+10')));
   assert.equal(await page.locator('[data-action="cancel-order"]').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(162, 56, 48)');
   for(const width of [320,414,430]){
