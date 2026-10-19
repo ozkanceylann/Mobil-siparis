@@ -170,6 +170,7 @@ function hasZeroOrderTotal(value) {
 }
 function deliveryBadge(o){return o.subeden_teslim===true?'<span class="badge branch-delivery">Şubeden teslim</span>':'';}
 function originalMessageCard(o){return `<details class="card-original-message" data-original-message="${Number(o.siparis_no)}"><summary>Orjinal mesaj <span class="original-message-arrow" aria-hidden="true"></span></summary><div class="original-message-text" role="status">Mesajı görmek için açın.</div></details>`;}
+function orderWriteSnapshot(o){const original={...o};delete original.customer_order_history;return original;}
 document.addEventListener('toggle',async event=>{
  const panel=event.target;
  if(!panel.matches||!panel.matches('details[data-original-message]')||!panel.open||panel.dataset.loaded||panel.dataset.loading)return;
@@ -209,7 +210,7 @@ async function saveCancelPending(form){
  const order=S.detail,userId=S.user?.id,button=form.querySelector('[type="submit"]');
  cancellingOrder=true;button.disabled=true;errorBox.textContent='';
  try{
-  const {data,error}=await db.rpc(S.admin?'admin_cancel_pending':'seller_cancel_pending',{p_id:order.siparis_no,p_reason:reason,p_original:order});
+  const {data,error}=await db.rpc(S.admin?'admin_cancel_pending':'seller_cancel_pending',{p_id:order.siparis_no,p_reason:reason,p_original:orderWriteSnapshot(order)});
   if(S.user?.id!==userId)return;
   if(error)throw error;
   await CustomerOrderHistory.load(db,[data]);if(S.detail?.siparis_no===order.siparis_no){++detailRequest;S.detail=data;renderDetail();}
@@ -257,7 +258,7 @@ async function saveEdit(form){if(!canEdit(S.detail)){toast('Yalnızca hazırlanm
  if(!['true','false'].includes(delivery.value)){errorBox.textContent='Teslim şeklini seçin.';button.disabled=false;return;}
  if(delivery.value==='true'&&!branchSelector?.valid()){errorBox.textContent='Teslim alınacak DHL şubesini listeden seçin.';button.disabled=false;return;}
  const changes=Object.fromEntries(new FormData(form));
- changes.subeden_teslim=delivery.value==='true';changes.teslim_subesi=changes.subeden_teslim?document.getElementById('delivery_branch').value.trim():null;changes.teslim_sekli_kontrol=false;try{changes.kargo_kg=CargoWeights.normalize(changes.kargo_kg,changes.kargo_adet);}catch(error){errorBox.textContent=error.message;button.disabled=false;return;}changes.sehir_kodu=document.getElementById('city').value;changes.ilce_kodu=document.getElementById('district').value;const {data,error}=await db.rpc(S.admin?'admin_update_order':'seller_update_pending',{p_id:S.detail.siparis_no,p_changes:changes,p_original:S.detail});button.disabled=false;if(error){errorBox.textContent=errText(error);return;}await CustomerOrderHistory.load(db,[data]);S.detail=data;renderDetail();toast('Sipariş bilgileri kaydedildi.');await loadOrders();}
+ changes.subeden_teslim=delivery.value==='true';changes.teslim_subesi=changes.subeden_teslim?document.getElementById('delivery_branch').value.trim():null;changes.teslim_sekli_kontrol=false;try{changes.kargo_kg=CargoWeights.normalize(changes.kargo_kg,changes.kargo_adet);}catch(error){errorBox.textContent=error.message;button.disabled=false;return;}changes.sehir_kodu=document.getElementById('city').value;changes.ilce_kodu=document.getElementById('district').value;const {data,error}=await db.rpc(S.admin?'admin_update_order':'seller_update_pending',{p_id:S.detail.siparis_no,p_changes:changes,p_original:orderWriteSnapshot(S.detail)});button.disabled=false;if(error){errorBox.textContent=errText(error);return;}await CustomerOrderHistory.load(db,[data]);S.detail=data;renderDetail();toast('Sipariş bilgileri kaydedildi.');await loadOrders();}
 function renderAdmin(){app.innerHTML=`<div class="shell">${header()}<section class="hero"><div class="eyebrow">YÖNETİCİ ALANI</div><h1>Satıcı hesapları.</h1><button class="text-btn" data-action="orders-home">← Siparişlere dön</button><p>Telefonu doğrula, kişisel şifreyle hesabını aç.</p></section><div class="detail-block"><p class="hint">Liste “Sipariş Alan” telefonuna göre çıkarılır. Eski kayıtlarda hatalı numara olabilir; hesabı açmadan önce satıcıya ait olduğunu doğrula. Her hesap yalnızca o telefonla eşleşen siparişleri görür.</p></div><div id="admin-list" class="admin-list">${adminList()}</div><button class="text-btn" data-action="logout">Çıkış yap</button></div>`;}
 function adminList(){return S.candidates.map(c=>`<div class="seller-row"><div class="row between"><div><h3>${esc(pretty(c.phone))}</h3><div class="sub">${c.orders} sipariş · ${c.user_id?'Hesap açık':'Henüz hesap yok'}</div></div><span class="badge ${c.user_id?'delivered':'pending'}">${c.user_id?'Aktif':'Yeni'}</span></div><div class="seller-actions"><button data-seller="${c.phone}" data-mode="${c.user_id?'reset':'create'}">${c.user_id?'Şifreyi yenile':'Hesap oluştur'}</button></div></div>`).join('')||'<div class="loading">Satıcılar yükleniyor…</div>';}
 async function loadCandidates(){const {data,error}=await db.rpc('seller_admin_candidates');if(error){toast(errText(error));return;}if(!S.user||!S.admin)return;S.candidates=data;if(S.manageAccounts)renderAdmin();}
