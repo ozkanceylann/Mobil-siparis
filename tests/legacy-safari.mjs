@@ -34,7 +34,7 @@ try {
      if(name==='seller_order_detail'){window.openedOrderId=args.p_id;return {data:{...fixture,siparis_no:args.p_id}};}
      if(name==='gazi_customer_order_history')return {data:{1200:{ordinal:2,total:2,orders:[{siparis_no:1200,tarih:fixture.tarih},{siparis_no:1100,tarih:'2026-09-01T12:00:00'}]}}};
      if(name==='seller_original_order_message'){window.originalMessageReads=(window.originalMessageReads||0)+1;return {data:{message:'Müşterinin mesajı\n5 kg ürün <özel not>'}};}
-     if(name==='seller_update_pending'){if('customer_order_history' in args.p_original)throw Error('Display metadata must not enter the write snapshot');window.savedChanges=args;return {data:{...fixture,...args.p_changes}};}
+     if(name==='seller_update_pending'){if(['customer_order_history','receipts','receiptError'].some(key=>key in args.p_original))throw Error('Display metadata must not enter the write snapshot');window.savedChanges=args;return {data:{...fixture,...args.p_changes}};}
      if(name==='seller_orders'){window.lastFilter=args.p_filter;return {data:{orders:[fixture],total:1,counts:{all:1,pending:1}}};}
      throw Error('Unexpected RPC: '+name);
     },
