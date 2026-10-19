@@ -9,17 +9,17 @@ vm.runInContext(source.slice(start,end),context);context.rows=rows;
 vm.runInContext('markExtras(rows)',context);
 assert.match(vm.runInContext("extraSlot(rows[0],'history')",context),/yükleniyor/);
 const token=rows[0]._extrasToken;
-for(const kind of ['history','receipts','note'])slots.set(`[data-order-extra="${kind}:1:${token}"]`,{innerHTML:'loading',querySelector:()=>null});
+for(const kind of ['history','receipts','note'])slots.set(`[data-order-extra="${kind}:1:${token}"]`,{outerHTML:'loading',querySelector:()=>null});
 context.root={querySelectorAll:selector=>slots.has(selector)?[slots.get(selector)]:[]};context.current=true;
 const hydration=vm.runInContext('hydrateExtras(rows,()=>current,root)',context);
 (async()=>{
  doneReceipts();await new Promise(r=>setImmediate(r));
- assert.equal(slots.get(`[data-order-extra="receipts:1:${token}"]`).innerHTML,'receipt','One finished extra must not wait for another');
- assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).innerHTML,'loading');
+ assert.equal(slots.get(`[data-order-extra="receipts:1:${token}"]`).outerHTML,'receipt','One finished extra must not wait for another');
+ assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).outerHTML,'loading');
  context.current=false;doneHistory();doneNote();await hydration;
- assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).innerHTML,'loading','Stale screen must not be patched');
+ assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).outerHTML,'loading','Stale screen must not be patched');
  context.current=true;vm.runInContext('markExtras(rows)',context);await vm.runInContext('hydrateExtras(rows,()=>current,root)',context);
- assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).innerHTML,'loading','Old slot must not receive another render generation');
+ assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).outerHTML,'loading','Old slot must not receive another render generation');
  if(mobile){const snapshot=source.slice(source.indexOf('function orderWriteSnapshot('),source.indexOf('\n',source.indexOf('function orderWriteSnapshot(')));vm.runInContext(snapshot,context);context.input={siparis_no:1,receipts:[],customer_order_history:{},_extrasToken:4,_loading_history:false,_loading_note:true};assert.deepEqual(JSON.parse(vm.runInContext('JSON.stringify(orderWriteSnapshot(input))',context)),{siparis_no:1},'Display metadata must never enter edit/cancel snapshots');}
  // Run the real list function while extras intentionally never resolve.
  let rendered=false,background=false;
