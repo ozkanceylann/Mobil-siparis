@@ -20,6 +20,7 @@ const hydration=vm.runInContext('hydrateExtras(rows,()=>current,root)',context);
  assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).innerHTML,'loading','Stale screen must not be patched');
  context.current=true;vm.runInContext('markExtras(rows)',context);await vm.runInContext('hydrateExtras(rows,()=>current,root)',context);
  assert.equal(slots.get(`[data-order-extra="history:1:${token}"]`).innerHTML,'loading','Old slot must not receive another render generation');
+ if(mobile){const snapshot=source.slice(source.indexOf('function orderWriteSnapshot('),source.indexOf('\n',source.indexOf('function orderWriteSnapshot(')));vm.runInContext(snapshot,context);context.input={siparis_no:1,receipts:[],customer_order_history:{},_extrasToken:4,_loading_history:false,_loading_note:true};assert.deepEqual(JSON.parse(vm.runInContext('JSON.stringify(orderWriteSnapshot(input))',context)),{siparis_no:1},'Display metadata must never enter edit/cancel snapshots');}
  // Run the real list function while extras intentionally never resolve.
  let rendered=false,background=false;
  const data=[{siparis_no:7}],elements={orders:{innerHTML:''},ordersBody:{innerHTML:'',children:[]},loadMoreBtn:{},pagination:{},'result-count':{},'search-scope':{}};
