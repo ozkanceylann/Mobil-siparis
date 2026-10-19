@@ -10,7 +10,7 @@ const ctx=vm.createContext({
  labels:{pending:'Bekleyen',delivered:'Teslim',all:'Tümü'},
  navigator:{onLine:true},document:{activeElement:elements.search,getElementById:id=>elements[id],addEventListener:(type,fn)=>handlers[type]=fn},
  db:{rpc:async(name,body)=>{calls.push({name,body});const orders=fixtures.filter(o=>body.p_filter==='all'||o.status===body.p_filter).slice(body.p_offset);return {data:{orders,total:orders.length,counts:{all:2}}};}},
- loadCustomerNoteIcons:async()=>{},CustomerOrderHistory:{load:async()=>{}},OrderReceipts:{load:async()=>{}},card:o=>String(o.siparis_no),pagination:()=>'<button>More</button>',renderShell:()=>{},toast:()=>{},
+ markExtras:()=>{},hydrateExtras:async()=>{},app:{},loadCustomerNoteIcons:async()=>{},CustomerOrderHistory:{load:async()=>{}},OrderReceipts:{load:async()=>{}},card:o=>String(o.siparis_no),pagination:()=>'<button>More</button>',renderShell:()=>{},toast:()=>{},
  setTimeout:fn=>{scheduled=fn;return 1;},clearTimeout:()=>{scheduled=null;}
 });
 vm.runInContext('let searchTimer;'+source.slice(source.indexOf('function searchScope()'),source.indexOf('async function loadOrders(append=false)')),ctx);
