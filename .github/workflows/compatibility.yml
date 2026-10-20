@@ -15,4 +15,4 @@ jobs:
           node-version: 22
       - run: npm install --no-package-lock
       - run: npx playwright install --with-deps chromium
-      - run: node tests/legacy-safari.mjs
+      - run: node tests/receipt-open.cjs && node tests/legacy-safari.mjs && node tests/receipt-open-browser.mjs
