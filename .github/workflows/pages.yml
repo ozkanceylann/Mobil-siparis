@@ -24,7 +24,7 @@ jobs:
       - name: Validate JavaScript
         run: node --check app.js && node --check sw.js && node --check config.js && node --check updates.js && node --check branch-selector.js
       - name: Install browser test dependencies
-        run: npm install --no-package-lock && npx playwright install --with-deps chromium
+        run: npm install --no-package-lock && npx playwright install chromium
       - name: Verify legacy and native order sheets
         run: node tests/receipt-open.cjs && node tests/legacy-safari.mjs && node tests/receipt-open-browser.mjs
       - name: Package public files
