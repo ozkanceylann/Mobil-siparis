@@ -11,7 +11,7 @@ const receiptSource=await readFile(new URL('order-receipts.js',root),'utf8');
 const historySource=await readFile(new URL('customer-order-history.js',root),'utf8');
 const css=await readFile(new URL('style.css',root),'utf8');
 assert.ok(!weights.includes('(?<='),'Cargo weights must parse on Safari 15 (no lookbehind)');
-const fixture={siparis_no:1200,ad_soyad:'Deneme Müşteri',musteri_tel:'05550000000',adres:'Deneme Sokak 12',sehir:'İSTANBUL',ilce:'KADIKÖY',sehir_kodu:'34',ilce_kodu:'3401',urun_bilgisi:'Deneme ürün',toplam_tutar:'990',odeme_sekli:'Kapıda ödeme',notlar:'',kargo_adet:'2',kargo_kg:'5-10',tarih:'2026-10-18T12:00:00',kargo_durumu:'Bekliyor',status:'pending',customer_note:'Örnek müşteri notu',subeden_teslim:true,teslim_subesi:'KADIKÖY',teslim_sekli_kontrol:false};
+const fixture={siparis_no:1200,bolunme_ana_siparis_no:1200,bolunme_sira:1,ad_soyad:'Deneme Müşteri',musteri_tel:'05550000000',adres:'Deneme Sokak 12',sehir:'İSTANBUL',ilce:'KADIKÖY',sehir_kodu:'34',ilce_kodu:'3401',urun_bilgisi:'Deneme ürün',toplam_tutar:'990',odeme_sekli:'Kapıda ödeme',notlar:'',kargo_adet:'2',kargo_kg:'5-10',tarih:'2026-10-18T12:00:00',kargo_durumu:'Bekliyor',status:'pending',customer_note:'Örnek müşteri notu',subeden_teslim:true,teslim_subesi:'KADIKÖY',teslim_sekli_kontrol:false};
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 try {
  for(const legacy of [false,true]) {
@@ -58,6 +58,11 @@ try {
   await page.locator('[data-tab="home"]').click();
   await page.waitForFunction(()=>window.lastFilter==='all'&&scrollY===0);
   assert.equal(await page.locator('.order-meta .branch-delivery').innerText(),'Şubeden teslim');
+  assert.equal(await page.locator('.order-status-badges .split-order').innerText(),'Bölünmüş sipariş · 1/2');
+  assert.match(await page.evaluate(()=>splitBadge({...window.fixture,bolunme_sira:2})),/2\/2/);
+  for(const width of [320,390,430]){await page.setViewportSize({width,height:736});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Split badge overflow at '+width);}
+  await page.setViewportSize({width:414,height:736});
+
   assert.equal(await page.evaluate(()=>window.originalMessageReads||0),0,'Original messages load only when expanded');
   await page.locator('.card-original-message summary').tap();
   await page.waitForFunction(()=>document.querySelector('.original-message-text').textContent.includes('<özel not>'));
