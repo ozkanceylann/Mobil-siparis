@@ -16,7 +16,7 @@ const ctx=vm.createContext({
 vm.runInContext('let searchTimer;'+source.slice(source.indexOf('function searchScope()'),source.indexOf('async function loadOrders(append=false)')),ctx);
 // Use the actual request function and actual input/tab/filter handlers.
 const loadStart=source.indexOf('async function loadOrders(append=false)');
-vm.runInContext(source.slice(loadStart,source.indexOf('\n',loadStart)),ctx);
+vm.runInContext(source.slice(loadStart,source.indexOf('\nfunction accountMarkup',loadStart)),ctx);
 for(const type of ['input','click']){
  const start=source.indexOf("document.addEventListener('"+type+"',");
  vm.runInContext(source.slice(start,source.indexOf('\n',start)),ctx);

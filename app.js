@@ -211,7 +211,44 @@ function reportMarkup(){reportDates();const r=S.report,rows=r?.sellers||[],metri
 async function loadReport(){if(!S.user||!S.admin||S.tab!=='reports')return;reportDates();if(S.reportStart>S.reportEnd){S.reportError='Başlangıç tarihi bitiş tarihinden sonra olamaz.';renderShell();return;}if(!navigator.onLine){S.reportError='Rapor için internete bağlan.';renderShell();return;}const id=++S.reportRequest;S.reportLoading=true;S.reportError='';S.report=null;renderShell();const {data,error}=await db.rpc('admin_sales_report',{p_start:S.reportStart,p_end:S.reportEnd});if(id!==S.reportRequest||!S.user||!S.admin||S.tab!=='reports')return;S.reportLoading=false;if(error)S.reportError=errText(error);else S.report=data;renderShell();}
 function pagination(){return S.orders.length<S.total?'<button class="secondary load-more" data-action="more">Daha fazla göster</button>':'';}
 function searchScope(){return S.search.trim()?'Arama sonuçları · Tüm siparişler':'Seçili sekme · '+(S.filter==='in_transit'?'Kargoda':labels[S.filter]);}
-async function loadOrders(append=false){if(!S.user||S.manageAccounts||(S.tab==='account'||S.tab==='reports'))return;if(!navigator.onLine){toast('Güncel siparişler için internete bağlan.');return;}const id=++S.request;S.offset=append?S.orders.length:0;const target=document.getElementById('orders');if(!append&&target)target.innerHTML='<div class="skeleton"></div><div class="skeleton"></div>';const {data,error}=await db.rpc(S.admin?'admin_orders':'seller_orders',{p_filter:S.search.trim()?'all':S.filter,p_search:(S.search.trim()?S.search:S.tabSearch).trim(),p_offset:S.offset});if(id!==S.request||!S.user)return;if(error){if(target)target.innerHTML='<div class="error-box">'+esc(errText(error))+'<button class="text-btn" data-action="refresh">Tekrar dene</button></div>';return;}markExtras(data.orders||[]);if(id!==S.request||!S.user)return;S.orders=append?[...S.orders,...data.orders]:data.orders;S.counts=data.counts;S.total=data.total;S.updated=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});if(['search','tab-search'].includes(document.activeElement?.id)){document.getElementById('orders').innerHTML=S.orders.map(card).join('')||'<div class="empty">Sonuç bulunamadı.</div>';document.getElementById('pagination').innerHTML=pagination();document.getElementById('result-count').textContent=S.total+' kayıt';document.getElementById('search-scope').textContent=searchScope();}else renderShell();void hydrateExtras(data.orders||[],()=>!!S.user&&app.isConnected!==false,app);}
+async function loadOrders(append=false){if(!S.user||S.manageAccounts||(S.tab==='account'||S.tab==='reports'))return;if(!navigator.onLine){toast('Güncel siparişler için internete bağlan.');return;}const id=++S.request;S.offset=append?S.orders.length:0;const target=document.getElementById('orders');if(!append&&target)target.innerHTML='<div class="skeleton"></div><div class="skeleton"></div>';const {data,error}=await db.rpc(S.admin?'admin_orders':'seller_orders',{p_filter:S.search.trim()?'all':S.filter,p_search:(S.search.trim()?S.search:S.tabSearch).trim(),p_offset:S.offset});if(id!==S.request||!S.user)return;if(error){if(target)target.innerHTML='<div class="error-box">'+esc(errText(error))+'<button class="text-btn" data-action="refresh">Tekrar dene</button></div>';return;}rememberReturnList(data,append,id);markExtras(data.orders||[]);if(id!==S.request||!S.user)return;S.orders=append?[...S.orders,...data.orders]:data.orders;S.counts=data.counts;S.total=data.total;S.updated=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});if(['search','tab-search'].includes(document.activeElement?.id)){document.getElementById('orders').innerHTML=S.orders.map(card).join('')||'<div class="empty">Sonuç bulunamadı.</div>';document.getElementById('pagination').innerHTML=pagination();document.getElementById('result-count').textContent=S.total+' kayıt';document.getElementById('search-scope').textContent=searchScope();}else renderShell();void hydrateExtras(data.orders||[],()=>!!S.user&&app.isConnected!==false,app);}
+// Compare server records before display-only history/receipt metadata is attached.
+let returnListSnapshot=null,returnListChecking=false;
+function returnListKey(){return JSON.stringify([S.user?.id,S.admin,S.tab,S.filter,S.search,S.tabSearch]);}
+function returnRecordSignature(value){
+ return JSON.stringify(value,function(key,item){
+  if(key==='kargo_gunc_saat')return undefined;
+  if(item&&typeof item==='object'&&!Array.isArray(item))return Object.keys(item).sort().reduce((out,k)=>{out[k]=item[k];return out;},{});
+  return item;
+ });
+}
+function rememberReturnList(data,append,request){
+ const key=returnListKey();
+ const page={offset:S.offset,signature:returnRecordSignature(data.orders||[])};
+ const pages=append&&returnListSnapshot?.key===key?[...returnListSnapshot.pages,page]:[page];
+ returnListSnapshot={key,pages,total:data.total,request};
+}
+async function checkOrdersOnReturn(){
+ if(returnListChecking||!S.user||S.manageAccounts||sheet.open||document.visibilityState==='hidden'||!navigator.onLine||['account','reports'].includes(S.tab))return;
+ const snapshot=returnListSnapshot,request=S.request;
+ // A different screen or an in-flight list request owns the next render.
+ if(!snapshot||snapshot.key!==returnListKey()||snapshot.request!==request)return;
+ const isCurrent=()=>S.user&&S.request===request&&returnListSnapshot===snapshot&&returnListKey()===snapshot.key&&!sheet.open&&document.visibilityState!=='hidden';
+ returnListChecking=true;
+ try{
+  for(const page of snapshot.pages){
+   const {data,error}=await db.rpc(S.admin?'admin_orders':'seller_orders',{p_filter:S.search.trim()?'all':S.filter,p_search:(S.search.trim()?S.search:S.tabSearch).trim(),p_offset:page.offset});
+   if(!isCurrent()||error||!data)return;
+   if(data.total!==snapshot.total||returnRecordSignature(data.orders||[])!==page.signature){
+    await loadOrders();
+    if(S.request===request+1&&returnListSnapshot?.request===S.request&&returnListKey()===snapshot.key&&!sheet.open){window.scrollTo(0,0);toast('Kayıtlar değişti, liste güncellendi.');}
+    return;
+   }
+  }
+ }catch(error){console.warn('Dönüşte liste kontrol edilemedi',error.message);}
+ finally{returnListChecking=false;}
+}
+
 function accountMarkup(){if(S.admin)return adminAccountMarkup();return `<section class="hero"><div class="eyebrow">KİŞİSEL ALANIN</div><h1>Hesabım.</h1><p>Güvenli erişimin, telefonunda.</p></section><div class="account-card"><div class="row"><div class="avatar">${icon('user')}</div><div><h3>${esc(pretty(S.user.app_metadata.seller_phone))}</h3><div class="sub">Satıcı hesabı</div></div></div><div class="info-row">${icon('shield')} Yalnızca kendi siparişlerini görürsün.</div><div class="info-row">${icon('edit')} Bekleyen siparişlerini düzenleyebilirsin.</div><div class="info-row">${icon('lock')} Hazırlanan ve kargodaki siparişler yalnızca görüntülenir.</div></div><button class="secondary" data-action="password-change">${icon('lock')} Şifremi değiştir</button>${installCard()}<button class="text-btn" data-action="logout">Güvenli çıkış yap</button>`;}
 function adminAccountMarkup(){return `<section class="hero"><div class="eyebrow">YÖNETİCİ HESABI</div><h1>Hesabım.</h1><p>Tüm siparişler senin kontrolünde.</p></section><div class="account-card"><h3>${esc(pretty(S.user.app_metadata.admin_phone||CFG.adminPhone))}</h3><div class="sub">Yönetici · ${esc(S.user.email)}</div><div class="info-row">${icon('shield')} Tüm satıcıların siparişlerini görebilirsin.</div><div class="info-row">${icon('edit')} Yalnızca hazırlanmamış (bekleyen) siparişleri düzenleyebilirsin.</div></div><button class="secondary" data-action="manage-sellers">${icon('user')} Satıcı hesaplarını yönet</button><button class="secondary" data-action="password-change">${icon('lock')} Şifremi değiştir</button>${installCard()}<button class="text-btn" data-action="logout">Güvenli çıkış yap</button>`;}
 async function authenticate(form){const button=form.querySelector('[type=submit]'),errorBox=document.getElementById('login-error');button.disabled=true;errorBox.textContent='';const username=form.username.value.trim(), p=phone(username);if(!S.admin&&!p){errorBox.textContent='Geçerli bir cep telefonu numarası gir.';button.disabled=false;return;}const {data,error}=await db.auth.signInWithPassword({email:S.admin?username:p===CFG.adminPhone?CFG.adminEmail:p+'@'+CFG.sellerEmailDomain,password:form.password.value});form.password.value='';if(error){errorBox.textContent='Telefon/e-posta veya şifre hatalı. Hesabının açıldığından emin ol.';button.disabled=false;return;}await enter(data.user);}
@@ -297,8 +334,8 @@ document.addEventListener('change',e=>{if(e.target.id==='city')loadDistricts(e.t
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;});
 window.addEventListener('appinstalled',()=>{deferredInstall=null;document.querySelectorAll('.install-card').forEach(card=>card.remove());toast('Sipariş Takip ana ekranına eklendi.');});
 window.addEventListener('offline',()=>{toast('Bağlantı kesildi. Düzenleme için internet gerekli.');});
-window.addEventListener('online',()=>{toast('Yeniden çevrimiçisin.');if(S.user&&!S.manageAccounts&&S.tab!=='account')(S.tab==='reports'?loadReport():loadOrders());});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.user&&!S.manageAccounts&&!sheet.open&&S.tab!=='account'&&navigator.onLine)(S.tab==='reports'?loadReport():loadOrders());});
+window.addEventListener('online',()=>{toast('Yeniden çevrimiçisin.');if(S.user&&!S.manageAccounts&&S.tab!=='account')(S.tab==='reports'?loadReport():checkOrdersOnReturn());});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.user&&!S.manageAccounts&&!sheet.open&&S.tab!=='account'&&navigator.onLine)(S.tab==='reports'?loadReport():checkOrdersOnReturn());});
 db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'&&S.user){++S.request;S.user=null;S.orders=[];S.detail=null;if(sheet.open)sheet.close();sheet.innerHTML='';renderLogin();}});
 (async()=>{app.innerHTML='<div class="loading">Sipariş Takip açılıyor…</div>';const {data:{session}}=await db.auth.getSession();if(session){const {data:{user},error}=await db.auth.getUser();if(!error&&user)await enter(user);else{await db.auth.signOut({scope:'local'});renderLogin();}}else renderLogin();})();
 
