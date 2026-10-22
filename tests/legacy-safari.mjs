@@ -54,7 +54,7 @@ try {
   await page.waitForFunction(()=>window.lastFilter==='pending');
   await page.locator('[data-tab="shipments"]').click();
   await page.waitForFunction(()=>window.lastFilter==='cargo_transit');
-  for(const [tab,filter] of [['orders','pending'],['ready','cargo_prepared'],['shipments','cargo_transit'],['distribution','distribution'],['completed','delivered'],['returns','cargo_returns']]){
+  for(const [tab,filter] of [['orders','pending'],['ready','cargo_prepared'],['shipments','cargo_transit'],['distribution','distribution'],['completed','delivered'],['returns','return_label']]){
    await page.locator('[data-tab="'+tab+'"]').click();await page.waitForFunction(f=>window.lastFilter===f,filter);
    assert.equal(await page.locator('.cargo-nav [aria-current="page"]').count(),1);
   }
