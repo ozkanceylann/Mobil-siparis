@@ -53,7 +53,22 @@ try {
   await page.locator('[data-tab="orders"]').click();
   await page.waitForFunction(()=>window.lastFilter==='pending');
   await page.locator('[data-tab="shipments"]').click();
-  await page.waitForFunction(()=>window.lastFilter==='in_transit');
+  await page.waitForFunction(()=>window.lastFilter==='cargo_transit');
+  for(const [tab,filter] of [['orders','pending'],['ready','cargo_prepared'],['shipments','cargo_transit'],['distribution','distribution'],['completed','delivered'],['returns','return_label']]){
+   await page.locator('[data-tab="'+tab+'"]').click();await page.waitForFunction(f=>window.lastFilter===f,filter);
+   assert.equal(await page.locator('.cargo-nav [aria-current="page"]').count(),1);
+  }
+  assert.equal(await page.locator('.cargo-nav button').count(),6);
+  assert.equal(await page.locator('[data-tab="reports"]').count(),0);
+  for(const admin of [false,true]){
+   await page.evaluate(a=>{S.admin=a;renderShell();},admin);
+   assert.equal(await page.locator('[data-tab="reports"]').count(),admin?1:0);
+   for(const width of [320,390,430]){await page.setViewportSize({width,height:736});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Nav overflow');
+    assert(await page.locator('.cargo-nav').evaluate(el=>el.scrollWidth<=el.clientWidth),'All six stages fit');
+   }
+  }
+  await page.evaluate(()=>{S.admin=false;renderShell();});await page.setViewportSize({width:414,height:736});
+
   await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
   await page.locator('[data-tab="home"]').click();
   await page.waitForFunction(()=>window.lastFilter==='all'&&scrollY===0);

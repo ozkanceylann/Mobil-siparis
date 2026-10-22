@@ -252,3 +252,14 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .order-status-badges{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:4px;margin-left:auto;min-width:0;max-width:100%;}
 .order-meta .order-status-badges .badge{margin-left:0;}
 .badge.split-order{background:#164e50;color:#99f6e4;border:1px solid #36cfc9;}
+
+/* Six cargo stages stay visible; account and admin tools use a compact second row. */
+.bottom-nav{display:flex;flex-direction:column;gap:4px;padding:6px 5px calc(6px + env(safe-area-inset-bottom));}
+.cargo-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;width:100%;}
+.bottom-nav .cargo-nav .nav-item{font-size:9px;gap:4px;padding:5px 0;min-height:48px;letter-spacing:-.2px;}
+.cargo-nav .nav-item svg{width:21px;height:21px;}
+.utility-nav{display:flex;gap:8px;border-top:1px solid #78936b33;padding-top:3px;}
+.bottom-nav .utility-nav .nav-item{flex-direction:row;justify-content:center;gap:5px;min-height:32px;font-size:10px;}
+.utility-nav svg{width:16px;height:16px;}
+.shell{padding-bottom:calc(135px + env(safe-area-inset-bottom));}
+#toast{bottom:calc(125px + env(safe-area-inset-bottom));}
