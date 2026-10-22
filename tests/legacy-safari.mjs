@@ -65,6 +65,7 @@ try {
    assert.equal(await page.locator('[data-tab="reports"]').count(),admin?1:0);assert.equal(await page.locator('.cargo-nav button').count(),admin?8:7);assert.equal(await page.locator('[data-tab="home"]').count(),0);
    for(const width of [320,390,430]){await page.setViewportSize({width,height:736});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Nav overflow');
     assert(await page.locator('.cargo-nav').evaluate(el=>el.scrollWidth<=el.clientWidth),'All six stages fit');
+    assert(await page.locator('.cargo-nav').evaluate(el=>{const items=[...el.querySelectorAll('button')];return items.every(b=>Math.abs(b.getBoundingClientRect().top-items[0].getBoundingClientRect().top)<1&&b.scrollWidth<=b.clientWidth); }),'Cargo, reports and account must fit one row');
    }
   }
   await page.evaluate(()=>{S.admin=false;renderShell();});await page.setViewportSize({width:414,height:736});
