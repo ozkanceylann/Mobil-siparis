@@ -271,3 +271,6 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .shell{padding-bottom:calc(100px + env(safe-area-inset-bottom));}
 #toast{bottom:calc(90px + env(safe-area-inset-bottom));}
 @media(max-width:350px){.bottom-nav .cargo-nav .nav-item{font-size:8px;letter-spacing:-.35px;}.cargo-nav .nav-item svg{width:19px;height:19px;}}
+
+.stat-count{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.stat .handover-parcels{font-size:12px;font-weight:500;white-space:nowrap;color:#c4d4c0}

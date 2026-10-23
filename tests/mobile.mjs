@@ -23,7 +23,7 @@ try{
   if(url.pathname.endsWith('/token')){loginBody=body;user={id:'00000000-0000-0000-0000-000000000001',email:body.email,app_metadata:body.email.includes('@satici.')?{role:'seller',firma:'seller',seller_phone:'05000000001'}:{firma:'gazi'},user_metadata:{},aud:'authenticated',created_at:new Date().toISOString()};data={access_token:token(),refresh_token:'stub-refresh',expires_in:3600,token_type:'bearer',user};}
   else if(url.pathname.endsWith('/user'))data=user;
   else if(url.pathname.endsWith('/logout'))data={};
-  else if(url.pathname.endsWith('/seller_orders')){const orders=[fixture,shipped].filter(o=>(body.p_filter==='all'||o.status===body.p_filter)&&(!body.p_search||o.ad_soyad.includes(body.p_search)||String(o.siparis_no).includes(body.p_search)));data={phone:'05000000001',counts:{all:2,pending:1,prepared:0,shipped:1,delivered:0,problem:0,cancelled:0},orders,total:orders.length};}
+  else if(url.pathname.endsWith('/seller_orders')){const orders=[fixture,shipped].filter(o=>(body.p_filter==='all'||o.status===body.p_filter)&&(!body.p_search||o.ad_soyad.includes(body.p_search)||String(o.siparis_no).includes(body.p_search)));data={phone:'05000000001',counts:{handover:8,handover_parcels:14,all:2,pending:1,prepared:0,shipped:1,delivered:0,problem:0,cancelled:0},orders,total:orders.length};}
   else if(url.pathname.endsWith('/seller_order_detail'))data=body.p_id===1200?fixture:shipped;
   else if(url.pathname.endsWith('/seller_update_pending')){updateBody=body;data={...fixture,...body.p_changes};}
   else if(url.pathname.endsWith('/seller_admin_candidates'))data=[{phone:'05000000001',orders:1212,user_id:null}];
@@ -37,6 +37,7 @@ try{
  await page.screenshot({path:resolve(root,'../login-qa.png'),fullPage:true});
  await page.locator('#username').fill('0500 000 00 01');await page.locator('#password').fill('Ab3!xy');await page.locator('#login-form .primary').click();
  await page.locator('[data-order="1200"]').waitFor();assert.equal(loginBody.email,'05000000001@satici.ozkanceylan.uk');
+ assert.equal(await page.locator('.stat-handover strong').textContent(),'8');assert.equal(await page.locator('.stat-handover .handover-parcels').textContent(),'14 parça');
  for(const width of [320,390,430]){await page.setViewportSize({width,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Mobile horizontal overflow at '+width);}
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:resolve(root,'../dashboard-qa.png'),fullPage:true});
  await page.locator('[data-order="1199"]').click();await page.locator('dialog[open]').waitFor();assert.equal(await page.locator('dialog [data-action="edit-order"]').count(),0);assert.equal(await page.locator('dialog a[target="_blank"]').count(),1);await page.locator('[data-action="close-sheet"]').click();
