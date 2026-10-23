@@ -1,0 +1,11 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const s=fs.readFileSync(require('path').join(__dirname,'../app.js'),'utf8');
+const a=s.indexOf('function parcelTotal('),b=s.indexOf('\n',s.indexOf('function overview()'));
+const keys=['all','pending','prepared','shipped','arrived','distribution','delivered','handover','problem','support','return_label','undelivered','returning','cancelled'];
+const c=Object.fromEntries(keys.flatMap(k=>[[k,2],[k+'_parcels',5]]));
+const ctx={S:{counts:c,filter:'all'},icon:()=>''};vm.createContext(ctx);vm.runInContext(s.slice(a,b),ctx);
+for(const k of keys)assert.match(ctx.parcelMarkup(k),/5 parça/);
+assert.equal(ctx.parcelTotal('inTransit'),15);assert.match(ctx.overview(),/15 parça/);
+ctx.S.counts={pending:0,pending_parcels:0};assert.match(ctx.parcelMarkup('pending'),/0 parça/);assert.match(ctx.parcelMarkup('handover'),/— parça/);assert.equal(ctx.parcelTotal('inTransit'),null);
+assert(s.includes('${parcelMarkup(k)}'),'All filter chips show parcel totals');
+console.log('PASS: all mobile counters, combined transit, zero and unavailable totals');

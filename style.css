@@ -274,3 +274,6 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 
 .stat-count{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 .stat .handover-parcels{font-size:12px;font-weight:500;white-space:nowrap;color:#c4d4c0}
+
+.overview .counter-parcels{font-size:12px;font-weight:500;white-space:nowrap;color:#c4d4c0}
+.chip .counter-parcels{font-size:10px;font-weight:400;white-space:nowrap;background:none;padding:0;opacity:.8}
