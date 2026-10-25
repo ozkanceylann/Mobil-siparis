@@ -51,8 +51,9 @@ begin
 end $$;
 create function mobile_intake.claim(p_id uuid default null) returns table(id uuid,message text,seller_phone text,claim_token uuid) language plpgsql security definer set search_path='' as $$
 begin
- update mobile_intake.requests set status='failed',result_message='İşlem zaman aşımına uğradı. Mesajı yeniden gönderebilirsiniz.' where status='processing' and claimed_at<now()-interval '5 minutes';
- return query with picked as (select r.id from mobile_intake.requests r where r.status='pending' and (p_id is null or r.id=p_id) order by r.created_at limit 1 for update skip locked)
+ if p_id is null then return;end if;
+ update mobile_intake.requests set status='failed',result_message='İşlem zaman aşımına uğradı. Mesajı yeniden gönderebilirsiniz.' where mobile_intake.requests.id=p_id and status='processing' and claimed_at<now()-interval '5 minutes';
+ return query with picked as (select r.id from mobile_intake.requests r where r.status='pending' and r.id=p_id order by r.created_at limit 1 for update skip locked)
  update mobile_intake.requests r set status='processing',claimed_at=now(),claim_token=gen_random_uuid() from picked where r.id=picked.id returning r.id,r.message,r.seller_phone,r.claim_token;
 end $$;
 create function mobile_intake.finish(p_id uuid,p_token uuid,p_data jsonb,p_error text default null) returns jsonb language plpgsql security definer set search_path='' as $$
