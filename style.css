@@ -290,3 +290,11 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .shell>.hero .eyebrow{font-size:9px;letter-spacing:1.2px}
 .shell>.hero h1{font-size:24px;line-height:1.15;margin:3px 0 4px}
 .shell>.hero p{font-size:11px;line-height:1.4;margin:0}
+
+/* Missing delivery information stays visible on the order list. */
+.order-data-warning{display:flex;flex-direction:column;gap:5px;margin:8px 0;padding:9px 10px;border:1px solid #f5ad65;border-left:4px solid #e66b20;border-radius:8px;background:#fff1df;color:#813207;white-space:normal;overflow-wrap:anywhere;text-align:left}
+.order-data-warning strong{font-size:12px;line-height:1.4;color:#813207}
+.order-data-warning-fields{display:flex;flex-wrap:wrap;gap:5px 10px;font-size:11px;line-height:1.5}
+.order-field-missing{display:inline-block;color:#ffdaaf;border-bottom:2px dashed #f5a044;font-weight:700;white-space:normal}
+.order-data-warning .order-field-missing{color:#813207;border-bottom-color:#cc590e}
+.order.order-has-missing-data{border-left:4px solid #f5a044}.customer-info{min-width:0;flex:1}
