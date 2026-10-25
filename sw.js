@@ -1,5 +1,5 @@
-const CACHE='siparis-static-v43-mobile-order-intake-20261025';
-const STATIC=['./','index.html','style.css','app.js','mobile-order-intake.js','customer-order-history.js','order-receipts.js','order-receipts.css','branch-selector.js','updates.js','config.js','cargo-weights.js','manifest.webmanifest','assets/supabase.js','assets/siparis-takip-mobile.svg','assets/siparis-takip-mobile-180.png','assets/siparis-takip-mobile-192.png','assets/siparis-takip-mobile-512.png'];
+const CACHE='siparis-static-v44-fixed-screen-20261025';
+const STATIC=['./','index.html','style.css','app.js','viewport-lock.css','viewport-lock.js','mobile-order-intake.js','customer-order-history.js','order-receipts.js','order-receipts.css','branch-selector.js','updates.js','config.js','cargo-weights.js','manifest.webmanifest','assets/supabase.js','assets/siparis-takip-mobile.svg','assets/siparis-takip-mobile-180.png','assets/siparis-takip-mobile-192.png','assets/siparis-takip-mobile-512.png'];
 const ROOT=new URL('./',self.location.href);
 const PATHS=new Set(STATIC.map(p=>new URL(p,ROOT).pathname));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(STATIC.map(p=>new Request(new URL(p,ROOT),{cache:'no-store'})))).then(()=>self.skipWaiting())));

@@ -22,15 +22,15 @@ jobs:
         with:
           node-version: 22
       - name: Validate JavaScript
-        run: node --check app.js && node --check sw.js && node --check config.js && node --check updates.js && node --check branch-selector.js && node --check mobile-order-intake.js
+        run: node --check app.js && node --check sw.js && node --check config.js && node --check updates.js && node --check branch-selector.js && node --check mobile-order-intake.js && node --check viewport-lock.js
       - name: Install browser test dependencies
         run: npm install --no-package-lock && npx playwright install chromium
       - name: Verify legacy and native order sheets
-        run: node tests/receipt-open.cjs && node tests/legacy-safari.mjs && node tests/receipt-open-browser.mjs && node tests/mobile-order-intake.mjs
+        run: node tests/receipt-open.cjs && node tests/legacy-safari.mjs && node tests/receipt-open-browser.mjs && node tests/mobile-order-intake.mjs && node tests/viewport-lock.test.cjs
       - name: Package public files
         run: |
           mkdir public
-          cp index.html style.css app.js mobile-order-intake.js order-receipts.js order-receipts.css customer-order-history.js branch-selector.js updates.js config.js sw.js cargo-weights.js manifest.webmanifest public/
+          cp index.html viewport-lock.css viewport-lock.js style.css app.js mobile-order-intake.js order-receipts.js order-receipts.css customer-order-history.js branch-selector.js updates.js config.js sw.js cargo-weights.js manifest.webmanifest public/
           cp -R assets public/
           touch public/.nojekyll
       - uses: actions/configure-pages@v5
