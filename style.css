@@ -277,3 +277,5 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 
 .overview .counter-parcels{font-size:12px;font-weight:500;white-space:nowrap;color:#c4d4c0}
 .chip .counter-parcels{font-size:10px;font-weight:400;white-space:nowrap;background:none;padding:0;opacity:.8}
+
+.new-order-button{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding:10px 14px;border:0;border-radius:14px;background:var(--green,#176e50);color:#fff;font:inherit;font-weight:700;cursor:pointer}.new-order-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}.mobile-order-intake textarea{min-height:240px;resize:vertical;line-height:1.6}.mobile-order-intake textarea[readonly]{opacity:.8}.mobile-order-intake .intake-success{padding:14px;border-radius:12px;background:#e6f6ed;color:#145b38;font-weight:700;white-space:pre-line}.mobile-order-intake .form-error{white-space:pre-line}

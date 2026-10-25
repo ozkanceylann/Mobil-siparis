@@ -32,3 +32,13 @@ GitHub Pages kaynağını **GitHub Actions** seçin. Ana dala gönderilen deği�
 `npm run check` JavaScript sözdizimini kontrol eder. `npm install`, `npx playwright install chromium` ve `npm run test:mobile` ile örnek yanıtlar üzerinden mobil arayüz akışları kontrol edilir.
 
 Üçüncü taraf lisansları: `THIRD_PARTY_NOTICES.md`.
+
+## Mesajdan yeni sipariş (yalnız mobil)
+
+Giriş yaptıktan sonra üstteki **Yeni sipariş** düğmesinden hazır WhatsApp mesajını yapıştırıp **Gönder**'e basın. Satıcı telefonu sunucuda oturumdan belirlenir. İşlem sırasında düğme kilitlenir; başarılı kayıtta sipariş numarası gösterilir. Eksik bilgilerde mesaj korunur ve düzeltme açıklaması görünür.
+
+Gönderim kimliği sekme oturumunda korunur; sayfa yenilendiğinde aynı işlemin sonucu sorgulanır. Aynı kullanıcının aynı metni 10 dakika içinde yeniden göndermesi de mevcut işlemi döndürür. Mobil giriş, WhatsApp'ın telefon bazlı güncelleme yolunu kullanmaz; yeni sipariş oluşturur.
+
+Sunucu sözleşmesi `supabase/sql/mobile-order-intake.sql`, n8n işçisi `n8n/mobile-order-intake.sdk.js` içindedir. Kuyruk özel şemada tutulur. Kullanıcılar yalnızca kendi gönderimlerini başlatıp sorgular; ayrıştırma ve kayıt RPC'leri yalnız hizmet rolüne açıktır. n8n webhook'u yalnızca kayıtlı bir isteği uyandırır; metin ve satıcı verisi kabul etmez. Dakikalık kontrol kaçırılan çağrıları tamamlar. WhatsApp sipariş akışı ve operasyon arayüzü ayrı kalır.
+
+`npm run test:intake` mobil gönderim, çift tıklama, eksik bilgi, yanıt kaybı ve yenileme senaryolarını örnek API yanıtlarıyla sınar. `tests/mobile-order-intake.sql` veritabanı yetkilerini, tekilleştirmeyi ve gerçek kayıt yolunu geri alınan bir işlemde doğrular.

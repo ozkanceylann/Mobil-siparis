@@ -9,10 +9,11 @@ const weights=await readFile(new URL('cargo-weights.js',root),'utf8');
 const branches=await readFile(new URL('branch-selector.js',root),'utf8');
 const receiptSource=await readFile(new URL('order-receipts.js',root),'utf8');
 const historySource=await readFile(new URL('customer-order-history.js',root),'utf8');
+const intakeSource=await readFile(new URL('mobile-order-intake.js',root),'utf8');
 const css=await readFile(new URL('style.css',root),'utf8');
 assert.ok(!weights.includes('(?<='),'Cargo weights must parse on Safari 15 (no lookbehind)');
 const fixture={siparis_no:1200,bolunme_ana_siparis_no:1200,bolunme_sira:1,ad_soyad:'Deneme Müşteri',musteri_tel:'05550000000',adres:'Deneme Sokak 12',sehir:'İSTANBUL',ilce:'KADIKÖY',sehir_kodu:'34',ilce_kodu:'3401',urun_bilgisi:'Deneme ürün',toplam_tutar:'990',odeme_sekli:'Kapıda ödeme',notlar:'',kargo_adet:'2',kargo_kg:'5-10',tarih:'2026-10-18T12:00:00',kargo_durumu:'Bekliyor',status:'pending',customer_note:'Örnek müşteri notu',subeden_teslim:true,teslim_subesi:'KADIKÖY',teslim_sekli_kontrol:false};
-const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+const browser=await chromium.launch({executablePath:process.env.BROWSER_PATH||undefined,headless:true,args:['--no-sandbox']});
 try {
  for(const legacy of [false,true]) {
   const context=await browser.newContext({viewport:{width:414,height:736},isMobile:true,hasTouch:true,serviceWorkers:'block'});
@@ -47,6 +48,7 @@ try {
   await page.addScriptTag({content:branches});
   await page.addScriptTag({content:historySource});
   await page.addScriptTag({content:receiptSource});
+  await page.addScriptTag({content:intakeSource});
   await page.addScriptTag({content:appSource});
   await page.locator('#login-form').waitFor();
   await page.evaluate(()=>{S.user=window.testUser;S.orders=[window.fixture];S.counts={all:1,pending:1};S.total=1;renderShell();});

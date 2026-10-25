@@ -17,7 +17,7 @@
   location.replace(url.href);
  }
  async function fingerprint(){
-  const sources=await Promise.all(['index.html','app.js','style.css','updates.js'].map(async path=>{
+  const sources=await Promise.all(['index.html','app.js','mobile-order-intake.js','style.css','updates.js'].map(async path=>{
    const response=await fetch(new URL(path,root),{cache:'no-store'});
    if(!response.ok)throw Error('Update unavailable');
    return response.text();
