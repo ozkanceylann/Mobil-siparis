@@ -26,7 +26,7 @@ jobs:
       - name: Install browser test dependencies
         run: npm install --no-package-lock && npx playwright install chromium
       - name: Verify legacy and native order sheets
-        run: node tests/receipt-open.cjs && node tests/legacy-safari.mjs && node tests/receipt-open-browser.mjs && node tests/mobile-order-intake.mjs && node tests/viewport-lock.test.cjs
+        run: node tests/receipt-open.cjs && node tests/legacy-safari.mjs && node tests/receipt-open-browser.mjs && node tests/mobile-order-intake.mjs && node tests/viewport-lock.test.cjs && node tests/missing-pending.mjs
       - name: Package public files
         run: |
           mkdir public

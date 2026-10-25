@@ -298,3 +298,13 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .order-field-missing{display:inline-block;color:#ffdaaf;border-bottom:2px dashed #f5a044;font-weight:700;white-space:normal}
 .order-data-warning .order-field-missing{color:#813207;border-bottom-color:#cc590e}
 .order.order-has-missing-data{border-left:4px solid #f5a044}.customer-info{min-width:0;flex:1}
+
+.missing-pending-slot{display:flex;justify-content:flex-end;position:relative;z-index:1}
+.missing-pending-slot:not(:empty){margin-top:14px}
+.missing-pending-notice{display:flex;align-items:center;gap:8px;max-width:100%;padding:9px 10px;border:1px solid #e5bd3d;border-radius:10px;background:#f6d65c1a;color:#ffe36e;text-align:left;min-height:48px}
+.missing-pending-notice>span:not(.missing-pending-triangle){font-size:12px;font-weight:750;line-height:1.4;min-width:0}
+.missing-pending-notice small{display:block;font-size:10px;font-weight:500;color:#ffe9a2;margin-top:3px}
+.missing-pending-notice .missing-pending-triangle{font-size:31px;line-height:1;flex-shrink:0;color:#ffdc42}
+.missing-pending-notice>svg{width:16px;height:16px}
+.missing-queue-navigation{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #b8922d;border-radius:10px;padding:10px;margin-bottom:14px;color:#ffe36e;background:#f6d65c15;font-size:12px}
+.missing-queue-navigation button{display:flex;align-items:center;gap:3px;min-height:40px;color:#ffe36e;font-weight:700}

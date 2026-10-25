@@ -5,6 +5,7 @@ function setup(){
  const elements={orders:{innerHTML:''}},calls=[];
  let rows=Array.from({length:65},(_,i)=>({siparis_no:100-i,status:'support',kargo_gunc_saat:'old'})),renders=0,scrolls=0;
  const c=vm.createContext({S:{user:{id:'seller'},admin:false,tab:'shipments',filter:'support',search:'',tabSearch:'',orders:[],request:0},sheet:{open:false},navigator:{onLine:true},document:{visibilityState:'visible',activeElement:null,getElementById:id=>elements[id]},window:{scrollTo:()=>scrolls++},app:{},console,toast:()=>{},errText:()=>'',esc:x=>x,markExtras:list=>list.forEach(o=>{o._extrasToken=123;o.receipts=[];}),hydrateExtras:()=>{},renderShell:()=>{renders++;elements.orders.innerHTML='rendered';},db:{rpc:async(name,args)=>{calls.push(args.p_offset);return {data:{orders:JSON.parse(JSON.stringify(rows.slice(args.p_offset,args.p_offset+30))),total:rows.length,counts:{}}};}}});
+ vm.runInContext(source.slice(source.indexOf('function missingPendingNotice('),source.indexOf('function overview(')),c);
  vm.runInContext(block,c);
  return {c,elements,calls,run:code=>vm.runInContext(code,c),rows,renderCount:()=>renders,scrollCount:()=>scrolls};
 }
