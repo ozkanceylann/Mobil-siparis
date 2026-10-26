@@ -1,4 +1,4 @@
-const CACHE='siparis-static-v51-seller-under-status-20261026';
+const CACHE='siparis-static-v52-legacy-receipt-approval-20261026';
 const STATIC=['./','index.html','style.css','app.js','viewport-lock.css','viewport-lock.js','mobile-order-intake.js','customer-order-history.js','order-receipts.js','order-receipts.css','branch-selector.js','updates.js','config.js','cargo-weights.js','manifest.webmanifest','assets/supabase.js','assets/siparis-takip-mobile.svg','assets/siparis-takip-mobile-180.png','assets/siparis-takip-mobile-192.png','assets/siparis-takip-mobile-512.png'];
 const ROOT=new URL('./',self.location.href);
 const PATHS=new Set(STATIC.map(p=>new URL(p,ROOT).pathname));
