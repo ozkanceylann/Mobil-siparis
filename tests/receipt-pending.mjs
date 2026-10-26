@@ -8,6 +8,7 @@ const root=resolve(new URL('..',import.meta.url).pathname);
 const server=createServer(async(req,res)=>{try{const path=resolve(root,'.'+new URL(req.url,'http://local').pathname+(new URL(req.url,'http://local').pathname==='/'?'index.html':''));if(!path.startsWith(root+'/'))throw Error();const body=await readFile(path);res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.svg':'image/svg+xml'})[extname(path)]||'text/plain');res.end(body);}catch{res.writeHead(404);res.end();}});
 await new Promise(done=>server.listen(0,'127.0.0.1',done));
 
+const browser=await chromium.launch({executablePath:process.env.BROWSER_PATH||undefined,headless:true,args:['--no-sandbox']});
 const base={siparis_no:1100,ad_soyad:'Normal Sipariş',musteri_tel:'05550000000',adres:'Deneme Mah. Sokak 1',sehir:'İSTANBUL',ilce:'KADIKÖY',subeden_teslim:false,teslim_sekli_kontrol:false,urun_bilgisi:'5 kg zeytin',kargo_adet:'1',kargo_kg:'5',toplam_tutar:'1000',odeme_sekli:'Kapıda Nakit',status:'pending',kargo_durumu:'Bekliyor'};
 const receiptOrders=[{...base,siparis_no:1201,ad_soyad:'Dekont Bir',odeme_sekli:'EFT'},{...base,siparis_no:1202,ad_soyad:'Dekont İki',odeme_sekli:'EFT'}];
 let user,waiting=true,lastFilter;const errors=[];
