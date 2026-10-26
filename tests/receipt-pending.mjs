@@ -36,7 +36,7 @@ try{
  for(const width of [320,390,430]){await page.setViewportSize({width,height:844});const box=await notice.boundingBox();assert(box.x>=0&&box.x+box.width<=width,'notice overflow at '+width);}
  await page.locator('#search').fill('unrelated');await page.waitForTimeout(500);assert(await notice.isVisible(),'warning independent of search');
  await notice.click();await page.locator('[data-order="1201"]').waitFor();assert.equal(lastFilter,'receipt_pending');assert.equal(await page.locator('#search').inputValue(),'');assert.equal(await page.locator('[data-order="1100"]').count(),0);await page.getByRole('heading',{name:'Dekont bekleyen siparişlerin'}).waitFor();
- await page.locator('[data-order="1201"]').click();await page.getByRole('heading',{name:'Sipariş #1201',exact:true}).waitFor();await page.locator('[data-action="close-sheet"]').click();
+ await page.locator('[data-order="1201"]').click();await page.getByRole('heading',{name:'Sipariş #1201',exact:true}).waitFor();await page.locator('[data-action="close-sheet"]').first().click();
  waiting=false;await page.locator('[data-action="refresh"]').first().click();await notice.waitFor({state:'detached'});assert.equal(await page.locator('[data-order="1201"]').count(),0,'completed/resolved orders disappear from receipt queue');
  await page.locator('[data-tab="account"]').click();await page.locator('[data-action="logout"]').click();await page.locator('#login-form').waitFor();assert.equal(await page.locator('.receipt-pending-notice').count(),0,'no warning survives logout');assert.deepEqual(errors,[]);
  console.log('PASS: off-page receipt warning, 320/390/430px layout, search-independent count, scoped list, open receipt details, zero-state removal and logout cleanup.');
