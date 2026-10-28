@@ -201,10 +201,8 @@ function whatsappOrderMessage(o){
  if(tracking)lines.push(`\u{1F69A} DHL Kargo\n\u{1F50E} Gönderi takip numaranız: ${tracking}`);
  if(status)lines.push(`${emoji} Siparişiniz ${status}${/aşamasında[.!]?$/i.test(status)?'':' aşamasında'}.`);
  else lines.push('\u{1F4E6} Siparişiniz hakkında bilgi vermek için yazıyorum.');
- if(['undelivered','arrived','support'].includes(o.status)){
-  const branch=destinationBranch(events);
-  if(branch)lines.push(`\u{1F4CD} Varış şubesi: ${branch.name}${branch.phone?`\n\u260E\uFE0F Şube telefonu: ${branch.phone.label}`:''}`);
- }
+ const branch=destinationBranch(events);
+ if(branch)lines.push(`\u{1F4CD} Varış şubesi: ${branch.name}${branch.phone?`\n\u260E\uFE0F Şube telefonu: ${branch.phone.label}`:''}`);
  return lines.join('\n\n');
 }
 function whatsappContactMarkup(o){const p=phone(o.musteri_tel);if(!p)return '';const message=whatsappOrderMessage(o);const href='https://api.whatsapp.com/send?phone=90'+p.slice(1)+'&text='+encodeURIComponent(message);return '<a class="whatsapp-contact" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer" aria-label="Müşteriyle WhatsApp üzerinden yazış: '+esc(o.ad_soyad||'')+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12 .1C5.4.1.1 5.4.1 12c0 2.1.5 4.1 1.6 5.9L0 24l6.3-1.7A12 12 0 0 0 12 23.8h.1c6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.2-6.2-3.5-8.4ZM12 21.8a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4A9.8 9.8 0 1 1 12 21.8Zm5.4-7.4c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2 0-.4 0-.6l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.8.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.3 3.2c.1.2 2.2 3.4 5.4 4.8.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.4Z"/></svg></a>';}

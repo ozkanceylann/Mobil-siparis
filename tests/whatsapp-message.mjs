@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-const context=vm.createContext({URL,window:{APP_CONFIG:{},addEventListener(){}},supabase:{createClient:()=>({auth:{onAuthStateChange(){},getSession:async()=>({data:{session:null}})}})},document:{getElementById:()=>({}),addEventListener(){}},navigator:{onLine:true},matchMedia:()=>({matches:false})});
+const context=vm.createContext({URL,CustomerOrderHistory:{bind(){}},MobileOrderIntake:{bind(){}},window:{APP_CONFIG:{},addEventListener(){}},supabase:{createClient:()=>({auth:{onAuthStateChange(){},getSession:async()=>({data:{session:null}})}})},document:{getElementById:()=>({showModal(){},close(){}}),addEventListener(){}},navigator:{onLine:true},matchMedia:()=>({matches:false})});
 vm.runInContext(readFileSync(new URL('../app.js',import.meta.url),'utf8'),context);
 context.order={musteri_tel:'05550000000',status:'undelivered',shipmentStatus:'Teslim_Edilemedi',kargo_takip_kodu:'303030541320',kargo_hareketleri:[
  {eventStatus:'Gönderi Hazırlandı',eventDateTime2:'2026-10-10 10:00:00',locationAddress:'AKHİSAR Şube',locationPhone:'0236 414 13 50'},
@@ -13,8 +13,15 @@ assert.match(message,/Merhaba 👋/);assert.match(message,/🚚 DHL Kargo/);asse
 assert.match(message,/📍 Varış şubesi: KUŞADASI Şube/);assert.match(message,/☎️ Şube telefonu: 0256 123 45 67/);assert.doesNotMatch(message,/AKHİSAR|0236|�|\*/);
 const html=vm.runInContext('whatsappContactMarkup(order)',context),href=html.match(/href="([^"]+)"/)[1].replaceAll('&amp;','&'),url=new URL(href);
 assert.equal(url.origin,'https://api.whatsapp.com');assert.equal(url.pathname,'/send');assert.equal(url.searchParams.get('phone'),'905550000000');assert.equal(url.searchParams.get('text'),message);
-context.order.status='arrived';assert.match(vm.runInContext('whatsappOrderMessage(order)',context),/Şube telefonu/);
-context.order.status='shipped';assert.doesNotMatch(vm.runInContext('whatsappOrderMessage(order)',context),/Varış şubesi|Şube telefonu/);
+for(const status of ['arrived','shipped','distribution','delivered','support']){
+ context.order.status=status;
+ const text=vm.runInContext('whatsappOrderMessage(order)',context);
+ assert.match(text,/Varış şubesi: KUŞADASI Şube/);assert.match(text,/Şube telefonu: 0256 123 45 67/);
+ const markup=vm.runInContext('whatsappContactMarkup(order)',context);
+ const link=new URL(markup.match(/href="([^"]+)"/)[1].replaceAll('&amp;','&'));
+ assert.equal(link.searchParams.get('text'),text);
+ assert.doesNotMatch(text,/AKHİSAR|0236/);
+}
 context.order.status='undelivered';context.order.kargo_hareketleri=context.order.kargo_hareketleri.slice(0,1);assert.doesNotMatch(vm.runInContext('whatsappOrderMessage(order)',context),/Varış şubesi|Şube telefonu/);
 context.order.kargo_hareketleri=[{eventStatus:'Varış Şubesinde',locationAddress:'KUŞADASI Şube'}];assert.match(vm.runInContext('whatsappOrderMessage(order)',context),/Varış şubesi: KUŞADASI/);assert.doesNotMatch(vm.runInContext('whatsappOrderMessage(order)',context),/Şube telefonu/);
 console.log('PASS: emojis preserved in direct WhatsApp URL; destination branch and phone; no sender/hub phone; missing phone handled.');
