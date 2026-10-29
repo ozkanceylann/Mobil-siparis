@@ -216,9 +216,9 @@ async function loadSupportNotes(rows){
 }
 function supportNoteButton(o){
  if(!canAddSupportNote(o))return '';
- if(!o._supportNoteLoaded)return `<button type="button" class="support-note-button support-note-unknown" data-action="support-note" data-note-order="${Number(o.siparis_no)}" data-support-note="${Number(o.siparis_no)}">Açıklamayı yükle</button>`;
+ if(!o._supportNoteLoaded)return `<button type="button" class="support-note-button support-note-unknown" data-action="support-note" data-note-order="${Number(o.siparis_no)}" data-support-note="${Number(o.siparis_no)}" aria-label="Görüşme açıklamasını yükle" title="Görüşme açıklamasını yükle">${icon('edit')}<span>Açıklamayı yükle</span></button>`;
  const saved=Boolean(String(o.support_note?.note||'').trim());
- return `<button type="button" class="support-note-button ${saved?'support-note-saved':'support-note-missing'}" data-action="support-note" data-note-order="${Number(o.siparis_no)}" data-support-note="${Number(o.siparis_no)}" aria-label="${saved?'Görüşme açıklamasını görüntüle':'Görüşme açıklaması ekle'}">${icon(saved?'check':'edit')}<span>${saved?'Açıklama var':'Açıklama ekle'}</span></button>`;
+ return `<button type="button" class="support-note-button ${saved?'support-note-saved':'support-note-missing'}" data-action="support-note" data-note-order="${Number(o.siparis_no)}" data-support-note="${Number(o.siparis_no)}" aria-label="${saved?'Görüşme açıklamasını görüntüle':'Görüşme açıklaması ekle'}" title="${saved?'Açıklama var · Görüntüle':'Görüşme açıklaması ekle'}">${icon(saved?'check':'edit')}<span>${saved?'Açıklama var':'Açıklama ekle'}</span></button>`;
 }
 async function openSupportNote(id){
  const o=S.orders.find(o=>Number(o.siparis_no)===Number(id));if(!o)return;
