@@ -322,8 +322,11 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .support-note-unknown{background:#34433e;color:#e1e6e3;border-color:#7c9187}
 .support-note-text{white-space:pre-wrap;overflow-wrap:anywhere}
 
-.customer-contacts-support{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:6px 8px}
+.customer-contacts-support{display:grid;grid-template-columns:minmax(0,1fr) 36px 36px;gap:5px;align-items:center}
 .customer-contacts-support .customer-contact-actions{display:contents}
-.customer-contacts-support .support-note-button{grid-column:1/-1;grid-row:1;justify-self:end}
-.customer-contacts-support .customer-phone,.customer-contacts-support .customer-phone-missing{grid-column:1;grid-row:2;justify-self:start}
-.customer-contacts-support .whatsapp-contact{grid-column:2;grid-row:2}
+.customer-contacts-support .support-note-button{grid-column:2;grid-row:1;width:36px;height:36px;min-height:36px;max-width:36px;padding:0;justify-self:center}
+.customer-contacts-support .support-note-button span{display:none}
+.customer-contacts-support .customer-phone,.customer-contacts-support .customer-phone-missing{grid-column:1;grid-row:1;justify-self:start;max-width:100%;min-width:0}
+.customer-contacts-support .customer-phone{gap:4px;padding-inline:6px;font-size:11px}
+.customer-contacts-support .whatsapp-contact{grid-column:3;grid-row:1;width:36px;height:36px}
+@media(max-width:350px){.customer-contacts-support .customer-phone{font-size:10px;padding-inline:4px;gap:3px}.customer-contacts-support .customer-phone svg{width:12px;height:12px}}
