@@ -313,3 +313,17 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .order-status-person{display:inline-flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:0;max-width:100%}
 .order-meta .order-status-badges{align-items:flex-start}
 .order-seller{display:block;max-width:120px;font-size:10px;line-height:1.2;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.customer-contact-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.support-note-button{display:flex;align-items:center;justify-content:center;gap:5px;min-height:38px;max-width:130px;padding:7px 9px;border:1px solid;border-radius:9px;font-size:11px;line-height:1.3;font-weight:700;white-space:normal}
+.support-note-button svg{width:15px;height:15px;flex-shrink:0}
+.support-note-missing{background:#612f31;color:#ffd0d0;border-color:#d17777}
+.support-note-saved{background:#205d3e;color:#c4f7d8;border-color:#63bb8a}
+.support-note-unknown{background:#34433e;color:#e1e6e3;border-color:#7c9187}
+.support-note-text{white-space:pre-wrap;overflow-wrap:anywhere}
+
+.customer-contacts-support{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:6px 8px}
+.customer-contacts-support .customer-contact-actions{display:contents}
+.customer-contacts-support .support-note-button{grid-column:1/-1;grid-row:1;justify-self:end}
+.customer-contacts-support .customer-phone,.customer-contacts-support .customer-phone-missing{grid-column:1;grid-row:2;justify-self:start}
+.customer-contacts-support .whatsapp-contact{grid-column:2;grid-row:2}
