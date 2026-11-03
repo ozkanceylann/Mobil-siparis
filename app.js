@@ -498,7 +498,22 @@ document.addEventListener('click', event => {
     ref: link.dataset.returnPreview,
     url: link.href
   });
-  dialog.append(close, frame);
+  const toolbar = document.createElement('div');
+  toolbar.style.cssText = 'display:flex;align-items:center;gap:8px';
+  const copy = document.createElement('button');
+  copy.type = 'button';
+  copy.textContent = 'DHL Linkini Kopyala';
+  copy.style.minHeight = '44px';
+  copy.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(link.href);
+      copy.textContent = 'Link kopyalandı';
+    } catch {
+      copy.textContent = 'Tekrar dene';
+    }
+  };
+  toolbar.append(copy, close);
+  dialog.append(toolbar, frame);
   dialog.addEventListener('close', () => { dialog.remove(); link.focus(); }, {once:true});
   document.body.append(dialog);
   dialog.showModal();
