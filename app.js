@@ -268,7 +268,7 @@ function returnMovementMarkup(o){
  const events=sortCargoMovements(o.iade_hareketleri||[]);
  return `<details class="tracking"><summary><strong>İade Hareketleri · ${esc(returnStage(o))}</strong>${icon('chevron')}</summary><div class="tracking-body"><p>İade takip no: ${esc(o.iade_takip_kodu||'DHL teslim alımı bekleniyor')}</p>${o.iade_teslim_tarihi?`<p>Teslim: ${date(o.iade_teslim_tarihi)}</p>`:''}<ol class="tracking-events">${events.map(e=>`<li><strong>${esc(e.eventStatus||'İade hareketi')}</strong><time>${esc(e.eventDateTime||'')}</time><span>${esc(e.location||'')}</span><p>${esc(e.description||'')}</p></li>`).join('')||`<li>İade teslim bekliyor · ${date(o.iade_tarihi)}</li>`}</ol>${o.iade_takip_hatasi?`<p class="hint">${esc(o.iade_takip_hatasi)}</p>`:''}</div></details>`;
 }
-function returnLabelMarkup(o){if(!hasReturnLabel(o))return '';const url=safeReturnLabel(o.iade_etiket_url);return `<section class="return-label"><div><strong>${esc(returnStage(o))}</strong><p>İade kodu: ${esc(o.iade_kodu)}</p>${o.iade_tarihi?`<p>${date(o.iade_tarihi)}</p>`:''}</div>${url?`<a class="return-label-open" href="${esc(url)}" target="_blank" rel="noopener noreferrer">İade Fişini Aç ${icon('arrow')}</a>`:'<span class="hint">Fiş bağlantısı henüz yok.</span>'}</section>`;}
+function returnLabelMarkup(o){if(!hasReturnLabel(o))return '';const url=safeReturnLabel(o.iade_etiket_url);return `<section class="return-label"><div><strong>${esc(returnStage(o))}</strong><p>İade kodu: ${esc(o.iade_kodu)}</p>${o.iade_tarihi?`<p>${date(o.iade_tarihi)}</p>`:''}</div>${url?`<a class="return-label-open" href="${esc(url)}" data-return-preview="${esc(o.iade_kodu)}" target="_blank" rel="noopener noreferrer">İade Fişini Aç ${icon('arrow')}</a>`:'<span class="hint">Fiş bağlantısı henüz yok.</span>'}</section>`;}
 async function loadCustomerNoteIcons(orders){
  const ids=orders.map(o=>Number(o.siparis_no)).filter(n=>Number.isSafeInteger(n)&&n>0);if(!ids.length)return;
  try{const {data,error}=await db.rpc('seller_customer_notes',{p_order_ids:ids});if(error)throw error;for(const o of orders)o.customer_note=String(data?.[String(o.siparis_no)]||'');}
@@ -478,3 +478,29 @@ db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'&&S.user){++S.request
 
 document.addEventListener('keydown',event=>{const el=event.target.closest('.order-open[data-order]');if(!el||event.target!==el||!['Enter',' '].includes(event.key))return;event.preventDefault();showOrder(el.dataset.order);});
 
+
+document.addEventListener('click', event => {
+  const link = event.target.closest('a[data-return-preview]');
+  if (!link || !link.dataset.returnPreview || !window.HTMLDialogElement) return;
+  event.preventDefault();
+  const dialog = document.createElement('dialog');
+  dialog.setAttribute('aria-label', 'DHL iade fişi');
+  dialog.style.cssText = 'width:min(92vw,480px);max-height:85dvh;padding:12px;border:0;border-radius:14px;background:white;color:#182b1e;box-shadow:0 8px 40px #0008';
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.textContent = '✕ Kapat';
+  close.style.cssText = 'display:block;margin:0 0 8px auto;padding:8px 14px;min-height:44px';
+  close.onclick = () => dialog.close();
+  const frame = document.createElement('iframe');
+  frame.title = 'DHL iade fişi';
+  frame.style.cssText = 'display:block;width:100%;height:min(75vw,65dvh,460px);border:0';
+  frame.src = 'https://gazi.ozkanceylan.uk/iade-fisi.html?' + new URLSearchParams({
+    ref: link.dataset.returnPreview,
+    url: link.href
+  });
+  dialog.append(close, frame);
+  dialog.addEventListener('close', () => { dialog.remove(); link.focus(); }, {once:true});
+  document.body.append(dialog);
+  dialog.showModal();
+  close.focus();
+});
