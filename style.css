@@ -330,3 +330,9 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .customer-contacts-support .customer-phone{gap:4px;padding-inline:6px;font-size:11px}
 .customer-contacts-support .whatsapp-contact{grid-column:3;grid-row:1;width:36px;height:36px}
 @media(max-width:350px){.customer-contacts-support .customer-phone{font-size:10px;padding-inline:4px;gap:3px}.customer-contacts-support .customer-phone svg{width:12px;height:12px}}
+
+/* Özkan orders are visible to every seller. Keep existing warning accents. */
+.order.order-shared-ozkan{background:linear-gradient(120deg,#254d70,#1b3856);border-color:#6899c4}
+.order-shared-ozkan .order-seller{color:#c8e6ff;background:#315f83}
+.order-shared-ozkan>.tracking{background:#19364f;border-top-color:#537da0}
+.order-shared-ozkan .tracking-events li:before{box-shadow:0 0 0 3px #19364f}
