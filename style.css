@@ -336,3 +336,7 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .order-shared-ozkan .order-seller{color:#c8e6ff;background:#315f83}
 .order-shared-ozkan>.tracking{background:#19364f;border-top-color:#537da0}
 .order-shared-ozkan .tracking-events li:before{box-shadow:0 0 0 3px #19364f}
+
+/* AI explanations are shown only in order details. */
+.detail-system-note .note-text{white-space:pre-wrap;overflow-wrap:anywhere;}
+.detail-system-note{border-left:3px solid #7893a6;}
