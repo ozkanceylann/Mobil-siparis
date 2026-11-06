@@ -488,7 +488,7 @@ document.addEventListener('click', event => {
   event.preventDefault();
   const dialog = document.createElement('dialog');
   dialog.setAttribute('aria-label', 'DHL iade fişi');
-  dialog.style.cssText = 'width:min(92vw,480px);max-height:85dvh;padding:12px;border:0;border-radius:14px;background:white;color:#182b1e;box-shadow:0 8px 40px #0008';
+  dialog.style.cssText = 'position:fixed;inset:0;margin:auto;width:min(92vw,480px);max-width:calc(100vw - 24px);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);padding:12px;border:0;border-radius:14px;background:white;color:#182b1e;box-shadow:0 8px 40px #0008;display:flex;flex-direction:column;overflow:hidden';
   const close = document.createElement('button');
   close.type = 'button';
   close.textContent = '✕ Kapat';
@@ -496,13 +496,13 @@ document.addEventListener('click', event => {
   close.onclick = () => dialog.close();
   const frame = document.createElement('iframe');
   frame.title = 'DHL iade fişi';
-  frame.style.cssText = 'display:block;width:100%;height:min(75vw,65dvh,460px);border:0';
+  frame.style.cssText = 'display:block;width:100%;height:min(75vw,65vh,460px);height:min(75vw,65dvh,460px);min-height:0;flex:0 1 auto;border:0';
   frame.src = 'https://gazi.ozkanceylan.uk/iade-fisi.html?' + new URLSearchParams({
     ref: link.dataset.returnPreview,
     url: link.href
   });
   const toolbar = document.createElement('div');
-  toolbar.style.cssText = 'display:flex;align-items:center;gap:8px';
+  toolbar.style.cssText = 'display:flex;align-items:center;gap:8px;flex:0 0 auto';
   const copy = document.createElement('button');
   copy.type = 'button';
   copy.textContent = 'DHL Linkini Kopyala';
