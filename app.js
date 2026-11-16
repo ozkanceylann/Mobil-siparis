@@ -297,6 +297,31 @@ document.addEventListener('toggle',async event=>{
   const {data,error}=await db.rpc('seller_original_order_message',{p_id:Number(panel.dataset.originalMessage)});
   if(error)throw error;
   content.textContent=data?.message||'Bu siparişin orjinal mesajı kayıtlı değil.';
+  const previous=Array.isArray(data?.previous_messages)?data.previous_messages:[];
+  panel.querySelector('.previous-whatsapp-messages')?.remove();
+  if(previous.length){
+   const history=document.createElement('div');
+   history.className='previous-whatsapp-messages';
+   history.style.cssText='margin-top:12px;border-top:1px solid #ddd;padding-top:10px';
+   const heading=document.createElement('strong');
+   heading.textContent='Önceki Mesajlar ('+previous.length+')';
+   history.appendChild(heading);
+   previous.forEach((item,index)=>{
+    const entry=document.createElement('div');
+    entry.style.marginTop='10px';
+    const caption=document.createElement('small');
+    const date=item.degistirilme_tarihi||item.kayit_tarihi;
+    const stamp=date&&Number.isFinite(Date.parse(date))?new Date(date).toLocaleString('tr-TR'):'Tarih belirtilmemiş';
+    caption.textContent='Önceki mesaj '+(index+1)+' · '+stamp;
+    const message=document.createElement('div');
+    message.className='original-message-text';
+    message.style.cssText='white-space:pre-wrap;margin-top:4px';
+    message.textContent=item.mesaj||'';
+    entry.append(caption,message);
+    history.appendChild(entry);
+   });
+   content.after(history);
+  }
   panel.dataset.loaded='true';
  }catch(error){content.textContent='Mesaj alınamadı. Kapatıp yeniden açarak tekrar deneyin.';}
  finally{delete panel.dataset.loading;}
