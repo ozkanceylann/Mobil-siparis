@@ -340,3 +340,9 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 /* AI explanations are shown only in order details. */
 .detail-system-note .note-text{white-space:pre-wrap;overflow-wrap:anywhere;}
 .detail-system-note{border-left:3px solid #7893a6;}
+
+/* Web orders are shared with sellers and use a distinct light-green card. */
+.order.order-web-source{background:#e4f5e5;border-color:#7ebc83;color:#183b20}
+.order.order-web-source .order-seller{color:#245d2d;background:#c9ebce}
+.order.order-web-source>.tracking{background:#d8efda;border-top-color:#a9d4ad}
+.order.order-web-source>.tracking .tracking-events li:before{box-shadow:0 0 0 3px #d8efda}
