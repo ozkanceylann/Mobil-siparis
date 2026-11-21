@@ -346,3 +346,19 @@ dialog{background:#142219;color:var(--ink);border:1px solid #d4a85750;border-rad
 .order.order-web-source .order-seller{color:#245d2d;background:#c9ebce}
 .order.order-web-source>.tracking{background:#d8efda;border-top-color:#a9d4ad}
 .order.order-web-source>.tracking .tracking-events li:before{box-shadow:0 0 0 3px #d8efda}
+
+/* Keep web order text readable on the pale-green card. */
+.order.order-web-source .order-id,
+.order.order-web-source .order-date,
+.order.order-web-source .customer,
+.order.order-web-source .product,
+.order.order-web-source .order-footer .price,
+.order.order-web-source .order-action {
+  color:#183b20!important;
+}
+.order.order-web-source .order-meta .order-id,
+.order.order-web-source .order-meta .order-date {
+  background:#c9ebce;
+  border-color:#a9d4ad;
+}
+.order.order-web-source .order-footer {border-top-color:#a9d4ad}
